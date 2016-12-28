@@ -1,0 +1,35 @@
+- include_role:
+    name: utils
+    tasks_from: assert
+  vars:
+    assert_defined:
+      - from_role
+      - file_name
+      - config
+      - dest
+      - mode
+
+- set_fact:
+    base_path: "{{ playbook_dir }}/roles/{{ from_role }}"
+
+- set_fact:
+    file_path: "{{ base_path }}/files"
+
+- set_fact:
+    file_path: "{{ base_path }}/templates"
+  when:
+    - '".j2" in "{{ file_name }}"'
+
+- include_role:
+    name: utils
+    tasks_from: fragments
+  vars:
+    source_file: "{{ file_path }}/{{ file_name }}"
+    fragment_name: "{{ from_role }}-{{ file_name }}"
+
+- set_fact:
+    mode: null
+    validate: null
+    from_role: null
+    file_name: null
+    config: null

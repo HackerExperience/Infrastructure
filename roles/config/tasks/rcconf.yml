@@ -1,0 +1,13 @@
+- include_role:
+    name: config
+    tasks_from: creator
+  vars:
+    config: rcconf
+    dest: /etc/rc.conf
+    mode: 0644
+    validate: "/bin/sh %s" 
+
+- set_fact:
+    reboot_reason: "rc.conf has changed"
+  notify: reboot server
+  changed_when: assembled_fragment.changed
