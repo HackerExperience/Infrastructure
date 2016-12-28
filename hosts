@@ -1,0 +1,32 @@
+[all]
+ciserver ansible_host=127.0.0.1 ansible_port=2222
+ciagent ansible_host=127.0.0.1 ansible_port=2200
+dom0_dev ansible_host=144.217.65.190
+
+[ci]
+ciserver
+ciagent
+
+[ciserver]
+ciserver
+
+[ciagent]
+ciagent
+
+# Xen Dom0
+[dom0]
+dom0_dev
+
+# Bare metal hosts
+[metal]
+dom0_dev
+
+# Hosts running FreeBSD OS
+[freebsd]
+ciserver
+ciagent
+dom0_dev
+
+[freebsd:vars]
+ansible_python_interpreter=/usr/local/bin/python2.7
+ansible_perl_interpreter=/usr/local/bin/perl
