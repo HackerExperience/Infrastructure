@@ -1,0 +1,31 @@
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: dom0
+    task_file: setup
+    compare_with: "{{ ansible_local.track_dom0_setup | default() }}"
+
+- name: Setup Xen
+  include_role:
+    name: dom0
+    tasks_from: setup
+  when:
+    - "{{ _proceed_dom0_setup }}"
+  tags: dom0:setup
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: dom0
+    task_file: configure
+    compare_with: "{{ ansible_local.track_dom0_configure | default() }}"
+
+- name: Configure Xen
+  include_role:
+    name: dom0
+    tasks_from: configure
+  when:
+    - "{{ _proceed_dom0_configure }}"
+  tags: dom0:configure

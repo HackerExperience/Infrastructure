@@ -1,0 +1,6 @@
+- name: Setup Xen Dom0
+  hosts: dom0
+
+  roles:
+    - {role: common, tags: common}
+    - {role: dom0, tags: dom0}

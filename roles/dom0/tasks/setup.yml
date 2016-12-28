@@ -1,0 +1,45 @@
+- name: Install Xen
+  pkgng:
+    name: xen
+  become: true
+
+- name: Configure /etc/sysctl.conf
+  lineinfile:
+    dest: /etc/sysctl.conf
+    line: 'vm.max_wired=-1'
+  become: true
+
+- name: Configure /etc/ttys
+  lineinfile:
+    dest: /etc/ttys
+    line: 'xc0     "/usr/libexec/getty Pc"         xterm   on  secure'
+  become: true
+  
+- name: Configure boot loader
+  blockinfile:
+    dest: /boot/loader.conf
+    block: |
+      hw.pci.mcfg=0
+      xen_kernel="/boot/xen"
+      xen_cmdline="{{ xen_cmdline }}"
+  become: true
+
+- name: Configure boot menu
+  copy:
+    dest: /boot/menu.rc.local
+    content: 'try-include /boot/xen.4th'
+  become: true
+
+- set_fact:
+    reboot_reason: "Xen Kernel installed"
+  notify: reboot server
+  changed_when: True
+- meta: flush_handlers  # Force reboot to happen now
+
+- name: Track for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: dom0
+    track_file: setup

@@ -1,0 +1,8 @@
+
+# [ZFS]
+# Host with zfs has 8GB of ram, from which 4 GB is reserved to ZFS.
+#  
+config_zfs_arc_max: 4000000000 # 4 GB
+config_zfs_arc_min: 1000000000 # 1 GB
+config_zfs_arc_meta_limit: 2000000000 # 2 GB
+config_zfs_prefetch_disabled: 1

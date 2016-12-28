@@ -1,0 +1,15 @@
+- name: Add rc.conf fragment
+  include_role:
+    name: config
+    tasks_from: rcconf
+  vars:
+    from_role: dom0
+    file_name: rc.conf.j2
+
+- name: Track these tasks for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: dom0
+    track_file: configure
