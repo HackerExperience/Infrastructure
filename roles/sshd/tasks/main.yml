@@ -1,0 +1,18 @@
+- name: Add ssh user keys
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.public_key }}"
+  with_items: "{{ sshd_users }}"
+
+- name: sshd configuration file template
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    backup: yes
+    owner: 0
+    group: 0
+    mode: 0644
+    validate: '/usr/sbin/sshd -T -f %s'
+  notify:
+  - restart sshd
+ 
