@@ -1,0 +1,63 @@
+- name: Install wget
+  pkgng:
+    name: wget
+  become: true
+
+- name: Install CA root
+  pkgng:
+    name: ca_root_nss
+  become: true
+
+- name: Install bash
+  pkgng:
+    name: bash
+  become: true
+
+- name: Install sudo
+  pkgng:
+    name: sudo
+  become: true
+
+- name: Add sudoers template
+  template:
+    src: sudoers.j2
+    dest: /usr/local/etc/sudoers
+    owner: root
+    group: wheel
+    mode: 0440
+    backup: yes
+  become: true
+
+- name: Add ansible user
+  user:
+    name: "{{ user }}"
+    uid: "{{ user_uid }}"
+    shell: "{{ user_shell }}"
+    home: "{{ user_home }}"
+    password: "{{ user_password }}"
+    groups: wheel
+    append: yes
+  become: true
+
+- name: Ensure ansible facts directory exists
+  file:
+    path: /etc/ansible/facts.d
+    recurse: yes
+    state: directory
+  become: true
+
+- name: Add rc.conf fragment
+  include_role:
+    name: config
+    tasks_from: rcconf
+  vars:
+    from_role: common
+    file_name: rc.conf.j2
+
+- name: Track these tasks for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: common
+    track_file: configure

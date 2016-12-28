@@ -1,0 +1,24 @@
+- name: Gather local facts
+  setup:
+    fact_path: /etc/ansible/facts.d
+    filter: ansible_local
+  no_log: true
+
+- set_fact:
+    ansible_local: {}
+  when: ansible_local is not defined
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: common
+    task_file: configure
+    compare_with: "{{ ansible_local.track_common_configure | default() }}"
+
+- name: Perform configurations
+  include_role:
+    name: common
+    tasks_from: configure
+  when:
+    - "{{ _proceed_common_configure }}"
