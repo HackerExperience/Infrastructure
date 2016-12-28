@@ -1,0 +1,4 @@
+- name: Install openjdk8
+  pkgng:
+    name: openjdk8
+  become: true 
