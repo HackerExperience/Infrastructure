@@ -1,0 +1,35 @@
+- include_role:
+    name: utils
+    tasks_from: assert
+  vars:
+    assert_defined:
+    - source_file
+    - fragment_name
+    - config
+    - dest
+    - mode
+
+- file:
+    path: "/etc/ansible/fragments/{{ config }}"
+    recurse: yes
+    state: directory
+  become: true
+
+- name: Copy fragment
+  template:
+    src: "{{ source_file }}"
+    dest: "/etc/ansible/fragments/{{ config }}/{{ fragment_name }}"
+  become: true
+
+# Assemble should be a handler, but then we'd need to register the copied
+# fragments into a list, append and then the assemble should iterate over
+# it and assemble each one. No time for that.
+- name: Assemble fragment
+  assemble:
+    src: "/etc/ansible/fragments/{{ config }}"
+    dest: "{{ dest }}"
+    delimiter: '### START ANSIBLE FRAGMENT ###'
+    mode: "{{ mode }}"
+    validate: "{{ validate | default(False) }}"
+  register: assembled_fragment
+  become: true

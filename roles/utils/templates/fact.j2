@@ -1,0 +1,9 @@
+{{ shebang }}
+
+cat <<EOF
+{
+{% for kv in kvs %}
+  "{{ kv.key }}": {{ kv.value | to_json }}
+{% endfor %}
+}
+EOF

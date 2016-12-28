@@ -1,0 +1,24 @@
+- include_role:
+    name: utils
+    tasks_from: assert
+  vars:
+    assert_defined:
+      - from_role
+      - track_file
+
+- set_fact:
+    _tracker_name: "track_{{ from_role }}_{{ track_file }}"
+    _tracker_value: "{{ _hash[item] }}"
+  with_items: "{{ from_role }}_{{ track_file }}"
+
+- include_role:
+    name: utils
+    tasks_from: facts
+  vars:
+    name: "{{ _tracker_name }}"
+    kvs:
+      - {key: "hash", value: "{{ _tracker_value }}"}
+
+- set_fact:
+    from_role: null
+    track_file: null

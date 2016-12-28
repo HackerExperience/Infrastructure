@@ -1,0 +1,26 @@
+- debug:
+    msg: "Please confirm you want to reboot! Reason: {{ reboot_reason | default('Not given') }}. Press return to continue. Press Ctrl+c and then 'a' to abort. Will automatically reboot in 30 seconds."
+
+- name: Confirm reboot
+  pause:
+    seconds: 30
+
+# Send the reboot command
+- name: "Rebooting..."
+  shell: shutdown -r now
+  become: true
+
+# This pause is mandatory, otherwise the existing control connection gets reused!
+- pause:
+    seconds: 30
+
+# Now we will run a local 'ansible -m ping' on this host until it returns.
+# This works with the existing ansible hosts inventory and so any custom ansible_ssh_hosts definitions are being used
+- name: Waiting for server to come back up...
+  shell: ansible -u {{ ansible_user_id }} -m ping {{ inventory_hostname }}
+  register: result
+  until: result.rc == 0
+  retries: 30
+  delay: 10
+  delegate_to: localhost
+  changed_when: False

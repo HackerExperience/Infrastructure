@@ -1,0 +1,6 @@
+- assert:
+    that:
+      - "{{ item }} is defined"
+      - "not {{ item }} is none"
+  with_items:
+    - "{{ assert_defined }}"

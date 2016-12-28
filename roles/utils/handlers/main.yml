@@ -1,0 +1,5 @@
+# This requires ansible 2.3 because of issue:
+#   https://github.com/ansible/ansible/issues/18357
+- name: reboot server
+  include: reboot.yml
+  static: no
