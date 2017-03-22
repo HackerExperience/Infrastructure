@@ -1,2 +1,4 @@
 elixir_user: "{{ jenkins_user }}"
 elixir_group: "{{ jenkins_group }}"
+
+dialyxir_path: "/usr/local/dialyxir"
