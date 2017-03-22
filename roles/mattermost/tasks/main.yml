@@ -1,0 +1,27 @@
+- name: Install required stuff
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - git
+  become: true
+
+- name: Clone mattermost-docker
+  git:
+    repo: https://github.com/mattermost/mattermost-docker.git
+    dest: /usr/local/mattermost
+    force: true  # ignore local changes on docker-compose.yml
+  become: true
+
+- name: Replace docker-compose.yml with our config
+  template:
+    src: docker-compose.yml.j2
+    dest: /usr/local/mattermost/docker-compose.yml
+  become: true
+
+- name: Build & run
+  docker_service:
+    project_src: /usr/local/mattermost
+    build: yes
+    state: present
+  become: true
+

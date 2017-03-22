@@ -1,0 +1,42 @@
+version: "2"
+
+services:
+
+  db:
+    build: db
+    restart: unless-stopped
+    volumes:
+      - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - POSTGRES_USER={{ mm_username }}
+      - POSTGRES_PASSWORD={{ mm_password }}
+      - POSTGRES_DB={{ mm_database }}
+
+  app:
+    build:
+      context: app
+    restart: unless-stopped
+    volumes:
+      - ./volumes/app/mattermost/config:/mattermost/config:rw
+      - ./volumes/app/mattermost/data:/mattermost/data:rw
+      - ./volumes/app/mattermost/logs:/mattermost/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MM_USERNAME={{ mm_username }}
+      - MM_PASSWORD={{ mm_password }}
+      - MM_DBNAME={{ mm_database }}
+    depends_on:
+      - db
+
+  web:
+    build: web
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - ./volumes/web/cert:/cert:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - app
