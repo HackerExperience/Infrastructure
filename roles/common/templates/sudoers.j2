@@ -91,7 +91,7 @@ root ALL=(ALL) ALL
 # %wheel ALL=(ALL) ALL
 
 ## Same thing without a password
-%wheel ALL=(ALL) NOPASSWD: ALL
+%{{ root_group }} ALL=(ALL) NOPASSWD: ALL
 
 # Disable requiretty so we can enable Pipelining=True for ansible
 Defaults:{{ user }} !requiretty

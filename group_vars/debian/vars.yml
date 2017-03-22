@@ -1,0 +1,6 @@
+system_user: "debian"
+sudoers_path: "/etc/sudoers"
+root_group: "root"
+bash_path: "/bin/bash"
+internal_network_interface: ' {{ "eth1" if "cloud" in group_names else "eth1" }}'
+external_network_interface: '{{ "eth0" if "cloud" in group_names else "eth0" }}'

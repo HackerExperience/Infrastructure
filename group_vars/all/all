@@ -9,8 +9,9 @@ all_rcconf: |
 user: phoebe
 user_uid: 1003
 user_home: "/home/{{ user }}"
-user_shell: "/usr/local/bin/bash"
+user_shell: "{{ bash_path }}"
 user_password: "{{ private_sudo_password }}"
+user_group: "{{ root_group }}"
 
 # Meta
 shebang: "#!{{ user_shell }}"

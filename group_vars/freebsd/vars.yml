@@ -1,2 +1,9 @@
 ansible_python_interpreter: /usr/local/bin/python2.7
 ansible_perl_interpreter: /usr/local/bin/perl
+
+system_user: "freebsd"
+sudoers_path: "/usr/local/etc/sudoers"
+root_group: "wheel"
+bash_path: "/usr/local/bin/bash"
+internal_network_interface: '{{ "vtnet1" if "cloud" in group_names else "igb1" }}'
+external_network_interface: '{{ "vtnet0" if "cloud" in group_names else "igb0" }}'

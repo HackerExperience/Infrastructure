@@ -29,6 +29,7 @@
     from_role: common
     track_file: rc.conf.j2
     compare_with: "{{ ansible_local.track_common_rcconfj2 | default() }}"
+  when: "'freebsd' in group_names"
 
 - name: Add rc.conf fragment
   include_role:
@@ -38,7 +39,8 @@
     from_role: common
     file_name: rc.conf.j2
   when:
-    - _proceed_common_rcconfj2 
+    - _proceed_common_rcconfj2 is defined and _proceed_common_rcconfj2
+    - "'freebsd' in group_names"
 
 - name: Track rc.conf template for changes
   include_role:
@@ -47,3 +49,33 @@
   vars:
     from_role: common
     track_file: rc.conf.j2
+  when: "'freebsd' in group_names"
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: common
+    track_file: rc.local.j2
+    compare_with: "{{ ansible_local.track_common_rclocalj2 | default() }}"
+  when: "'debian' in group_names"
+
+- name: Add rc.conf fragment
+  include_role:
+    name: config
+    tasks_from: rclocal
+  vars:
+    from_role: common
+    file_name: rc.local.j2
+  when:
+    - _proceed_common_rclocalj2 is defined and _proceed_common_rclocalj2
+    - "'debian' in group_names"
+
+- name: Track rc.local template for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: common
+    track_file: rc.local.j2
+  when: "'debian' in group_names"

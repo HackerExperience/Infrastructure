@@ -1,13 +1,3 @@
-# \/ GCE Only
-# - name: Add mappings to /etc/hosts
-#   lineinfile:
-#     path: /etc/hosts
-#     line: "{{ item.ip }} {{ item.name }}"
-#   with_items:
-#     - { name: localhost, ip: "127.0.0.1" }
-#     - { name: localhost, ip: "::1" }
-#   become: true
-
 - name: Install some basic stuff
   pkgng:
     name: "{{ item }}"
@@ -16,7 +6,14 @@
     - ca_root_nss
     - bash
     - sudo
+  when: "'freebsd' in group_names"
   become: true
+- apt:
+    name: "{{ item }}"
+  with_items:
+    - ca-certificates
+  become: true
+  when: "'debian' in group_names"
 
 - name: Add ansible user
   user:
@@ -24,7 +21,7 @@
     shell: "{{ user_shell }}"
     home: "{{ user_home }}"
     password: "{{ user_password }}"
-    groups: wheel
+    groups: "{{ user_group }}"
     append: yes
   become: true
   no_log: true
@@ -32,9 +29,9 @@
 - name: Add sudoers template
   template:
     src: sudoers.j2
-    dest: /usr/local/etc/sudoers
+    dest: "{{ sudoers_path }}"
     owner: root
-    group: wheel
+    group: "{{ root_group }}"
     mode: 0440
     backup: yes
   become: true
