@@ -37,3 +37,32 @@
     - iex
     - elixirc
   become: true
+
+- name: Download dialyxir
+  git:
+    repo: https://github.com/jeremyjh/dialyxir
+    dest: "{{ dialyxir_path  }}"
+  become: true
+
+- file:
+    path: "{{ dialyxir_path  }}"
+    state: directory
+    owner: "{{ elixir_user }}"
+    group: "{{ elixir_group }}"
+  become: true
+
+- name: Install dialyxir
+  command: "{{ item }}"
+  args:
+    chdir: "{{ dialyxir_path  }}"
+  with_items:
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix clean
+    - mix compile
+    - mix archive.build
+    - mix archive.install --force
+  environment:
+    MIX_ENV: prod
+  become: true
+  become_user: "{{ elixir_user }}"
