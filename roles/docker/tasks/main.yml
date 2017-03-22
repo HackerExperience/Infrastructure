@@ -1,0 +1,22 @@
+- name: Install required stuff
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - ca-certificates
+    - curl
+    - apt-transport-https
+    - python-software-properties
+  become: true
+
+- name: Copy gpg key
+  shell: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+  become: true
+
+- apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian jessie stable
+  become: true
+
+- name: Install docker
+  apt:
+    name: docker-ce=17.03.0~ce-0~debian-jessie
+  become: true

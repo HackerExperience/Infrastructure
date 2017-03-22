@@ -1,0 +1,8 @@
+- name: Install pip
+  command: easy_install pip
+  become: true
+
+- name: Install Docker Compose
+  pip:
+    name: docker-compose
+  become: true

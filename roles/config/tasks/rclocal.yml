@@ -1,0 +1,12 @@
+- include_role:
+    name: config
+    tasks_from: creator
+  vars:
+    dest: /etc/rc.local
+    mode: 0774
+    validate: "/bin/sh %s" 
+
+- set_fact:
+    reboot_reason: "rc.local has changed"
+  notify: reboot server
+  changed_when: assembled_fragment.changed

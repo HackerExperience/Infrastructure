@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+ifconfig {{ internal_network_interface }} up
+{% if private_ip is defined %}
+  ifconfig {{ internal_network_interface }} {{ private_ip }}/16
+{% else %}
+  ifconfig {{ internal_network_interface }} {{ ansible_host }}/16
+{% endif %}
