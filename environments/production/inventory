@@ -1,0 +1,28 @@
+[all]
+helix-blue-1 ansible_host=192.168.100.10
+database-1 ansible_host=192.168.110.10
+
+[helix]
+helix-blue-1
+
+[database]
+database-1
+
+[blue]
+helix-blue-1
+
+# --- common ---
+
+[metal:children]
+
+[cloud:children]
+helix
+database
+
+[postgresql:children]
+database
+
+# Hosts running FreeBSD OS
+[freebsd:children]
+helix
+database

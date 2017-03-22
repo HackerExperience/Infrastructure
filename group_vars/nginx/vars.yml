@@ -1,0 +1,86 @@
+nginx_rcconf: |
+  nginx_enable="YES"
+
+nginx_user: www
+nginx_group: www
+nginx_conf_path: /usr/local/etc/nginx
+
+nginx_log_path: /var/log/nginx
+
+conf_error_log: "{{ nginx_log_path }}/error.log warn"
+conf_access_log: "{{ nginx_log_path }}/access.log combined buffer=5m flush=5m"
+
+conf_worker_processes: 1
+conf_worker_rlimit_nofile: 8192
+conf_worker_connections: 2048
+conf_processing_method: kqueue  # *BSD only. On Linux use epoll
+conf_multi_accept_bool: "on"
+conf_sendfile_bool: "on"
+
+conf_tcp: |
+  tcp_nopush on;
+  tcp_nodelay on;
+
+conf_gzip: |
+  gunzip on;
+  gzip on;
+  gzip_http_version  1.0;
+  gzip_proxied any;
+  gzip_min_length 512;
+  gzip_comp_level 5;
+  gzip_types text/plain text/css application/json application/x-javascript text/javascript;
+  gzip_disable "MSIE [1-6]\.";
+
+conf_openfile: |
+  open_file_cache max=65000 inactive=20s; 
+  open_file_cache_valid 30s; 
+  open_file_cache_min_uses 2;
+  open_file_cache_errors on;
+
+conf_buffers: |
+  client_body_buffer_size 128k;
+  client_max_body_size 10m;
+  client_header_buffer_size 1k;
+  large_client_header_buffers 8 4k;
+  output_buffers 1 32k;
+  postpone_output 1460;
+
+
+conf_ip_ratelimit: |
+  # limit the number of connections per single IP
+  #limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
+
+  # limit the number of requests for a given session
+  #limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+
+  # zone which we want to limit by upper values, we want limit whole server
+  #server {
+  #    limit_conn conn_limit_per_ip 10;
+  #    limit_req zone=req_limit_per_ip burst=10 nodelay;
+  #}
+
+conf_timeouts: |
+  client_body_timeout 20;
+  reset_timedout_connection on;
+  send_timeout 5;
+
+conf_keepalive: |
+  keepalive_timeout 30;
+  keepalive_requests 1000;
+
+# http block
+
+conf_server_tokens_bool: "off"
+
+conf_custom_headers: |
+  add_header X-Frame-Options SAMEORIGIN;
+  add_header X-Content-Type-Options nosniff;
+  add_header X-XSS-Protection "1; mode=block";
+
+conf_include: |
+  include {{ nginx_conf_path }}/mime.types;
+  include {{ nginx_conf_path }}/sites-enabled/*;
+
+conf_default_type: text/html
+
+conf_charset: UTF-8

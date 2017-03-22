@@ -17,7 +17,12 @@
 
 Port 22
 #AddressFamily any
+
+{% if not 'cloud' in group_names %}
 ListenAddress {{ ansible_host }}
+{% endif %}
+
+
 
 # The default requires explicit activation of protocol 1
 Protocol 2
@@ -55,7 +60,7 @@ PermitRootLogin no
 
 # The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
 #AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2
-AuthorizedKeysFile .ssh/authorized_keys
+#AuthorizedKeysFile .ssh/authorized_keys
 #AuthorizedPrincipalsFile none
 
 #AuthorizedKeysCommand none
@@ -135,4 +140,14 @@ X11Forwarding no
 #	AllowTcpForwarding no
 #	PermitTTY no
 #	ForceCommand cvs server
-AllowUsers phoebe
+
+AllowUsers {{ user }}
+
+{% for group in group_names %} 
+  {%- set group_entries = group + '_ssh_users' %}
+  {% set allowed_user = hostvars[inventory_hostname][group_entries] %}
+  {% if allowed_user is defined %}
+AllowUsers {{ allowed_user }}
+  {% endif %}
+{% endfor %}
+

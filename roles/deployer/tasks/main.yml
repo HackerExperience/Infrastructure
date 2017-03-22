@@ -1,0 +1,132 @@
+# - set_fact:
+#   deployer_pf_macros: 
+#     - build_servers = "{{ hostvars['build-elixir-1'].ansible_host }}"
+#     - "{{ groups['ciagent'] | map('extract', hostvars, ['ansible_host', 'ipv4', 'address']) | join(',') }}"
+#     - "{{ user }}"
+
+# # parei aqui: criar macro com lista de ips de ciagent
+# - set_fact:
+#     pf_extra_macros: "{{ groups['ciagent'] }}"
+
+# - debug:
+#     msg: "{{ pf_extra_macros }}"
+
+- name: Create deployer user
+  user:
+    name: "{{ deployer_user }}"
+    password: "{{ deployer_password }}"
+    createhome: true
+  # no_log: true
+  become: true
+
+- name: Install python2, bash
+  pkgng:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python2
+    - bash
+    - git
+    - ansible
+    - sshpass
+  become: true
+
+# Ansible (on deployer) complains about lack of python2...
+- file:
+    src: /usr/local/bin/python2
+    dest: /usr/local/bin/python
+    state: link
+  become: true
+
+- name: Copy our shell to remote system
+  copy:
+    src: shell.sh
+    dest: /usr/local/bin/deployer_shell
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: 0770
+  become: true
+
+- name: Add our shell to list of system shells
+  lineinfile:
+    path: /etc/shells  # s/path/dest if ansible < 2.3
+    line: /usr/local/bin/deployer_shell
+  become: true
+
+# Note: using ansible module `user` won't work with our custom shell
+- name: Update deployer user shell
+  command: chsh -s deployer_shell "{{ deployer_user }}"
+  changed_when: false
+  become: true
+
+- name: Copy deployment script
+  copy:
+    src: deploy.sh
+    dest: /usr/local/bin/deploy
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: 0770
+  become: true
+
+- name: Set authorized key for deployer user
+  authorized_key:
+    user: "{{ deployer_user }}"
+    key: "{{ lookup('file', '/home/renato/.ssh/deployer.pub') }}"
+  become: true
+
+# - name: Clone infra
+
+- name: Infra path file permissions
+  file:
+    path: /usr/local/infrastructure
+    state: directory
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+  become: true
+
+- name: Upload vault-password to deployer
+  copy:
+    src: ~/.vault-password
+    dest: "{{ deployer_home }}/.vault-password"
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: 0600
+  become: true
+
+- name: Upload deployer_production ssh key to deployer
+  copy:
+    src: "~/.ssh/deployer_production"
+    dest: "{{ deployer_home }}/.ssh/deployer_production"
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: 0600
+  become: true
+
+- name: Replace current host keys
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/ssh/{{ item }}"
+  with_items:
+    - ssh_host_ecdsa_key
+    - ssh_host_ecdsa_key.pub
+    - ssh_host_ed25519_key
+    - ssh_host_ed25519_key.pub
+    - ssh_host_rsa_key
+    - ssh_host_rsa_key.pub
+  become: true
+
+# We need ansible 2.3 (unreleased) so lets get the source
+- name: Install ansible
+  git:
+    repo: git://github.com/ansible/ansible.git
+    dest: /usr/local/ansible
+    recursive: true
+  become: true
+
+- file:
+    path: /usr/local/ansible
+    state: directory
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+  become: true
+

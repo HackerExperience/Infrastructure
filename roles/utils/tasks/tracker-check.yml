@@ -4,35 +4,70 @@
   vars:
     assert_defined:
       - from_role
-      - task_file 
+      - track_file 
       - compare_with
 
 - set_fact:
-    file_path: "{{ playbook_dir }}/roles/{{ from_role }}/tasks/{{ task_file }}.yml"
+    file_path: "{{ playbook_dir }}/roles/{{ from_role }}/tasks/{{ track_file }}.yml"
+    track_name: "{{ track_file }}"
+    tmp_path: ""
+
+- set_fact:
+    file_path: "{{ playbook_dir }}/roles/{{ from_role }}/templates/{{ track_file }}"
+    track_name: "{{ track_file | replace('.', '') }}"
+    tmp_path: "/tmp/_tracker_{{ track_file }}"
+  when:
+    - '".j2" in "{{ track_file }}"'
+    
+
+- set_fact:
     _tracked_hash: "{{ compare_with.hash | default() }}"
 
 - shell: md5 "{{ file_path }}" | awk -F ' ' '{print $4}'
-  register: _current_hash
+  register: _track_task_md5sum
   delegate_to: localhost
   changed_when: false
+  failed_when: "'not found' in _track_task_md5sum.stderr"
+
+- template: "src={{ file_path }} dest=/tmp/_tracker_{{ track_file }}"
+  delegate_to: localhost
+  changed_when: false
+  when: 
+    - '".j2" in "{{ track_file }}"'
+
+- shell: md5 "{{ tmp_path }}" | awk -F ' ' '{print $4}' && rm "{{ tmp_path }}"
+  register: _track_template_md5sum
+  changed_when: false
+  failed_when: "'not found' in _track_task_md5sum.stderr"
+  delegate_to: localhost
+  when:
+    - '".j2" in "{{ track_file }}"'
 
 - set_fact:
-    "_proceed_{{ from_role }}_{{ task_file }}": "{{ _current_hash.stdout != _tracked_hash }}"
+    _current_hash: "{{ _track_task_md5sum.stdout }}"
+
+- set_fact:
+    _current_hash: "{{ _track_template_md5sum.stdout }}"
+  when:
+    - '".j2" in "{{ track_file }}"'
+
+- set_fact:
+    "_proceed_{{ from_role }}_{{ track_name }}": "{{ _current_hash != _tracked_hash }}"
     _hash: "{{ _hash | default({}) | combine( {item.name: item.hash} ) }}"
     # I have to set this intermediary var because YAML
-    _fuck_ansible_and_yaml: "{{ _current_hash.stdout }}"
+    _fuck_ansible_and_yaml: "{{ _current_hash }}"
   with_items:
-    - { name: "{{ from_role }}_{{ task_file }}", hash: "{{ _tracked_hash }}" }
+    - { name: "{{ from_role }}_{{ track_name }}", hash: "{{ _tracked_hash }}" }
 
 # Replace remote hash with local hash when hashes are different
 - set_fact:
     _hash: "{{ _hash | combine( {item.name: item.hash} ) }}"
   with_items:
-    - { name: "{{ from_role }}_{{ task_file }}", hash: "{{ _fuck_ansible_and_yaml }}" }
+    - { name: "{{ from_role }}_{{ track_name }}", hash: "{{ _fuck_ansible_and_yaml }}" }
   when:
-    - "_proceed_{{ from_role }}_{{ task_file }}"
+    - "_proceed_{{ from_role }}_{{ track_name }}"
 
 - set_fact:
     from_role: null
-    task_file: null
+    track_file: null
     compare_with: null

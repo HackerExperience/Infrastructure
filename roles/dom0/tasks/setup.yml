@@ -1,6 +1,6 @@
 - name: Install Xen
   pkgng:
-    name: xen
+    name: xen-kernel
   become: true
 
 - name: Configure /etc/sysctl.conf

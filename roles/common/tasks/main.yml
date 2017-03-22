@@ -13,12 +13,37 @@
     tasks_from: tracker-check
   vars:
     from_role: common
-    task_file: configure
+    track_file: configure
     compare_with: "{{ ansible_local.track_common_configure | default() }}"
 
 - name: Perform configurations
   include_role:
     name: common
     tasks_from: configure
+  when:  _proceed_common_configure
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: common
+    track_file: rc.conf.j2
+    compare_with: "{{ ansible_local.track_common_rcconfj2 | default() }}"
+
+- name: Add rc.conf fragment
+  include_role:
+    name: config
+    tasks_from: rcconf
+  vars:
+    from_role: common
+    file_name: rc.conf.j2
   when:
-    - "{{ _proceed_common_configure }}"
+    - _proceed_common_rcconfj2 
+
+- name: Track rc.conf template for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: common
+    track_file: rc.conf.j2

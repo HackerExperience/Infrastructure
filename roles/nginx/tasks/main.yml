@@ -1,0 +1,69 @@
+- name: Install nginx
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - nginx
+  become: true
+
+- name: Ensure nginx logging stuff is there
+  file:
+    path: /var/log/nginx
+    state: directory
+  become: true
+
+- file:
+    path: "/var/log/nginx/{{ item }}"
+    state: touch
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+  with_items:
+    - access.log
+    - error.log
+    - access_jenkins.log
+    - error_jenkins.log
+  become: true
+
+- name: Ensure nginx directory is there
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+  with_items:
+    - "{{ nginx_conf_path }}"
+    - "{{ nginx_conf_path }}/sites-enabled"
+  become: true
+
+- include_role:
+    name: nginx
+    tasks_from: servers
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: nginx
+    track_file: nginx.conf.j2
+    compare_with: "{{ ansible_local.track_nginx_nginxconfj2 | default() }}"
+
+- include_role:
+    name: config
+    tasks_from: nginxconf
+  vars:
+    from_role: nginx
+    file_name: nginx.conf.j2
+  when: _proceed_nginx_nginxconfj2
+
+- name: Track nginx.conf for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: nginx
+    track_file: nginx.conf.j2
+
+- name: Ensure nginx is started
+  service:
+    name: nginx
+    state: started
+  become: true

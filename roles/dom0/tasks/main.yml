@@ -3,7 +3,7 @@
     tasks_from: tracker-check
   vars:
     from_role: dom0
-    task_file: setup
+    track_file: setup
     compare_with: "{{ ansible_local.track_dom0_setup | default() }}"
 
 - name: Setup Xen
@@ -19,7 +19,7 @@
     tasks_from: tracker-check
   vars:
     from_role: dom0
-    task_file: configure
+    track_file: configure
     compare_with: "{{ ansible_local.track_dom0_configure | default() }}"
 
 - name: Configure Xen

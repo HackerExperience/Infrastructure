@@ -1,0 +1,10 @@
+- name: Copy all servers to sites-enabled
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ nginx_conf_path }}/sites-enabled/{{ item }}"
+    mode: 0644
+  with_items:
+    - ci.hackerexperience.com
+  notify: reload nginx
+  become: true
+  become_user: "{{ nginx_user }}"

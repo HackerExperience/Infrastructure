@@ -1,0 +1,89 @@
+- name: Create jenkins group
+  group:
+    name: "{{ jenkins_group }}"
+  become: true
+
+- name: Create jenkins user
+  user:
+    name: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
+    home: "{{ jenkins_home }}"
+  become: true
+
+- name: Add jenkins-agent home folder
+  file:
+    path: "{{ jenkins_agent_path }}"
+    state: directory
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
+  become: true
+
+- name: Set authorized key for jenkins master
+  authorized_key:
+    user: "{{ jenkins_user }}"
+    key: "{{ lookup('file', '/home/renato/.ssh/jenkins_slave.pub') }}"
+  become: true
+
+- name: Ensure ssh directory exists
+  file:
+    path: "{{ jenkins_home }}/.ssh"
+    state: directory
+  become: true
+  become_user: "{{ jenkins_user }}"
+
+- name: Upload Deployer's private key
+  copy:
+    src: "~/.ssh/deployer"
+    dest: "{{ jenkins_home }}/.ssh/deployer"
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
+    mode: 0600
+  become: true
+
+- name: Update ssh config
+  blockinfile:
+    path: "{{ jenkins_home }}/.ssh/config"
+    block: |
+      Host deployer
+          Hostname "{{ hostvars[groups['deployer'][0]]['ansible_host'] }}"
+          IdentityFile ~/.ssh/deployer
+          User deployer
+    create: true
+    mode: 0600
+  become: true
+  become_user: "{{ jenkins_user }}"
+
+- name: Add deployer to known hosts
+  file:
+    path: "{{ jenkins_home }}/.ssh/known_hosts"
+    state: touch
+  become: true
+
+- known_hosts:
+    path: "{{ jenkins_home }}/.ssh/known_hosts"
+    name: "{{ hostvars[groups['deployer'][0]]['ansible_host'] }}"
+    key: "{{ hostvars[groups['deployer'][0]]['ansible_host'] }} {{ lookup('file', 'roles//deployer/files/ssh_host_ecdsa_key.pub') }}"
+  become: true
+  become_user: "{{ jenkins_user }}"
+
+- name: Install stuff required for builds
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - git
+    - gmake  # required to compile comeonin
+    - aws
+  become: true
+
+- name: Copy aws credentials
+  file:
+    path: "{{ jenkins_home }}/.aws"
+    state: directory
+  become: true
+  become_user: "{{ jenkins_user }}"
+
+- copy:
+    src: aws_credentials
+    dest: "{{ jenkins_home }}/.aws/credentials"
+  become: true
+  become_user: "{{ jenkins_user }}"

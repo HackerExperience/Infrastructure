@@ -1,0 +1,10 @@
+- name: Setup ciagent for helix
+  hosts: ciagent_helix
+
+  roles:
+    - {role: common, tags: common}
+    - {role: java, tags: java}
+    - {role: jenkins_slave, tags: jenkins_slave}
+    - {role: elixir, tags: elixir}
+    - {role: helix, tags: helix}
+    # - {role: pf, tags: pf}

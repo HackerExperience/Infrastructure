@@ -1,0 +1,44 @@
+[all]
+jenkins-1 ansible_host=192.168.20.10
+deployer-1 ansible_host=192.168.99.99
+build-elixir-1 ansible_host=192.168.21.10
+build-helix-1 ansible_host=192.168.22.10
+
+[ci:children]
+cimaster
+ciagent
+
+[cimaster]
+jenkins-1
+
+[ciagent:children]
+ciagent_elixir
+ciagent_helix
+
+[ciagent_elixir]
+build-elixir-1
+
+[ciagent_helix]
+build-helix-1
+
+[deployer]
+deployer-1
+
+# --- common ---
+
+[helix]
+build-helix-1
+
+[metal:children]
+
+[cloud:children]
+ci
+deployer
+
+[postgresql:children]
+ciagent_helix
+ciagent_elixir
+
+# Hosts running FreeBSD OS
+[freebsd:children]
+cloud

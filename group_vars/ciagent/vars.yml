@@ -1,0 +1,6 @@
+jenkins_user: "jenkins"
+jenkins_group: "jenkins"
+jenkins_home: "/home/{{ jenkins_user }}"
+jenkins_agent_path: "/usr/local/jenkins"
+
+ciagent_ssh_users: "jenkins"

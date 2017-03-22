@@ -1,0 +1,50 @@
+# {{ ansible_managed }}
+
+user {{ nginx_user }} {{ nginx_group }};
+
+worker_processes {{ conf_worker_processes | default('auto') }};
+
+error_log {{ conf_error_log }};
+
+worker_rlimit_nofile {{ conf_worker_rlimit_nofile | default('8192') }};
+
+events {
+  worker_connections  {{ conf_worker_connections | default('4096') }};
+  multi_accept {{ conf_multi_accept_bool | default('on') }};
+  use {{ conf_processing_method | default('epoll') }};
+}
+
+# proxy_http_version 1.1;
+# proxy_set_header Connection "";
+
+
+
+{{ conf_ip_ratelimit }}
+
+http {
+
+  access_log {{ conf_access_log }};
+
+  server_tokens {{ conf_server_tokens_bool | default('off') }};
+
+  sendfile {{ conf_sendfile_bool | default('on') }};
+
+  {{ conf_tcp }}
+
+  {{ conf_gzip }}
+
+  {{ conf_openfile }}
+
+  {{ conf_timeouts }}
+
+  {{ conf_keepalive }}
+
+  {{ conf_buffers }}
+
+  default_type {{ conf_default_type | default('text/html') }};
+
+  charset {{ conf_charset | default('UTF-8') }};
+
+  {{ conf_include }}
+
+}

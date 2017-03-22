@@ -5,7 +5,6 @@
     assert_defined:
       - from_role
       - file_name
-      - config
       - dest
       - mode
 
@@ -26,10 +25,10 @@
   vars:
     source_file: "{{ file_path }}/{{ file_name }}"
     fragment_name: "{{ from_role }}-{{ file_name }}"
+    config: "{{ from_role }}"
 
 - set_fact:
     mode: null
     validate: null
     from_role: null
     file_name: null
-    config: null

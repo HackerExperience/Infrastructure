@@ -1,0 +1,8 @@
+# Play for deploy center
+- name: Setup Bastion
+  hosts: bastion
+
+  roles:
+    - {role: common, tags: common}
+    - {role: bastion, tags: bastion}
+    # - {role: pf, tags: pf}

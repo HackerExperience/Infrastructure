@@ -1,0 +1,22 @@
+cloud_google_rcconf: |
+  google_accounts_manager_enable="YES"
+  google_startup_enable="YES"
+  ntpd_sync_on_start="YES"
+  ifconfig_DEFAULT="SYNCDHCP mtu 1460"
+  ntpd_enable="YES"
+  sshd_enable="YES"
+  panicmail_autosubmit="YES"
+
+cloud_rcconf: |
+  ifconfig_vtnet0="DHCP"
+  dumpdev="AUTO"
+  accounting_enable="YES"
+  ntpd_enable="YES"
+  sshd_enable="YES"
+  local_unbound_enable="YES"
+
+cloud_user: "freebsd"
+external_network_interface: "vtnet0"
+internal_network_interface: "vtnet1"
+
+cloud_ssh_users: "{{ cloud_user }}"

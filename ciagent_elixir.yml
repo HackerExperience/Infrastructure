@@ -1,0 +1,9 @@
+- name: Setup ciagent for elixir
+  hosts: ciagent_elixir
+
+  roles:
+    - {role: common, tags: common}
+    - {role: java, tags: java}
+    - {role: jenkins_slave, tags: jenkins_slave}
+    - {role: elixir, tags: elixir}
+    # - {role: pf, tags: pf}

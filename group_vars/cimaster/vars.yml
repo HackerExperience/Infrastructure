@@ -1,0 +1,12 @@
+cimaster_rcconf: |
+  jenkins_enable="YES"
+  jenkins_args="--webroot={{ jenkins_home }}/war --httpPort={{ jenkins_port }} --prefix=/"
+
+cimaster_pf_rules:
+  - "pass in on $ext_if proto tcp from any to any port 8180"
+
+jenkins_port: 8180
+jenkins_home: "/usr/local/jenkins"
+
+jenkins_user: "jenkins"
+jenkins_group: "jenkins"

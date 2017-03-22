@@ -12,7 +12,7 @@
 
 # This pause is mandatory, otherwise the existing control connection gets reused!
 - pause:
-    seconds: 30
+    seconds: 45
 
 # Now we will run a local 'ansible -m ping' on this host until it returns.
 # This works with the existing ansible hosts inventory and so any custom ansible_ssh_hosts definitions are being used

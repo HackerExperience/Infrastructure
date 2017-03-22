@@ -1,0 +1,53 @@
+- name: Install jenkins package
+  pkgng:
+    name: jenkins
+  become: true
+
+- name: Download latest version
+  get_url:
+    url: http://mirrors.jenkins.io/war/latest/jenkins.war
+    dest: /usr/local/share/jenkins
+  notify: restart jenkins
+  become: true
+
+- name: Ensure .ssh location exists
+  file:
+    path: "/home/{{ jenkins_user }}/.ssh"
+    state: directory
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_user }}"
+  become: true
+
+- name: Copy private key for slaves
+  copy:
+    src: ~/.ssh/jenkins_slave
+    dest: "/home/{{ jenkins_user }}/.ssh"
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
+    mode: 0400
+  become: true
+
+- name: Add git package
+  pkgng:
+    name: git
+  become: true
+
+- name: Ensure jenkins service is started
+  service:
+    name: jenkins
+    state: started
+  become: true
+
+- name: Install plugins
+  include_role:
+    name: jenkins
+    tasks_from: plugins
+  when:
+    - update_plugins is defined
+    - update_plugins == "1"
+
+- name: Warn user when plugins were skipped
+  debug:
+    msg: "Plugin installation was skipped. Run playbook with update_plugins=1 if you want them"
+  when:
+    - update_plugins is undefined

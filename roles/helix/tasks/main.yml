@@ -1,0 +1,41 @@
+- name: force helix
+  file:
+    name: /home/helix/touch
+    state: touch
+  become: true
+  become_user: helix
+
+- name: Add deployer user
+  user:
+    name: "{{ deployer_user }}"
+  become: true
+
+- name: Add helix user
+  user:
+    name: "{{ helix_user }}"
+  become: true
+
+- name: Copy deployer public key
+  authorized_key:
+    user: "{{ deployer_user }}"
+    state: present
+    key: "{{ lookup('file', '../../deployer/files/deployer_production.pub') }}"
+  become: true
+  become_user: "{{ deployer_user }}"
+
+- name: Install required stuff
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - git
+    - py27-boto
+    - gmake
+  become: true
+
+- include_role:
+    name: helix
+    tasks_from: deploy
+  when:
+    - deploy is defined
+  tags:
+    - deploy

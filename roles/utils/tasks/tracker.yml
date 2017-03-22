@@ -7,9 +7,9 @@
       - track_file
 
 - set_fact:
-    _tracker_name: "track_{{ from_role }}_{{ track_file }}"
+    _tracker_name: "track_{{ from_role }}_{{ track_file | replace('.', '') }}"
     _tracker_value: "{{ _hash[item] }}"
-  with_items: "{{ from_role }}_{{ track_file }}"
+  with_items: "{{ from_role }}_{{ track_file | replace('.', '') }}"
 
 - include_role:
     name: utils

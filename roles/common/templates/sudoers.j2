@@ -78,6 +78,14 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 ## User privilege specification
 ##
 root ALL=(ALL) ALL
+{% if 'cloud' in group_names -%}
+  {{ cloud_user }} ALL=NOPASSWD: ALL
+{% endif -%}
+{% if 'helix' in group_names -%}
+  {{ deployer_user }} ALL=({{ helix_user }}) NOPASSWD: ALL
+{% endif -%}
+
+
 
 ## Uncomment to allow members of group wheel to execute any command
 # %wheel ALL=(ALL) ALL
@@ -87,6 +95,9 @@ root ALL=(ALL) ALL
 
 # Disable requiretty so we can enable Pipelining=True for ansible
 Defaults:{{ user }} !requiretty
+{% if 'helix' in group_names -%}
+  Defaults:{{ deployer_user }} !requiretty
+{% endif -%}
 
 ## Uncomment to allow members of group sudo to execute any command
 # %sudo	ALL=(ALL) ALL

@@ -1,0 +1,7 @@
+- name: Setup Nginx for Infra
+  hosts: nginx-infra
+
+  roles:
+    - {role: common, tags: common}
+    - {role: nginx, tags: nginx}
+    # - {role: pf, tags: pf}

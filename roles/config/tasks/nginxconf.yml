@@ -1,0 +1,12 @@
+- include_role:
+    name: config
+    tasks_from: creator
+  vars:
+    dest: "{{ nginx_conf_path }}/nginx.conf"
+    mode: 0644
+    validate: "/usr/local/sbin/nginx -tc %s"
+
+- assert:
+    that: true
+  notify: reload nginx
+  changed_when: assembled_fragment.changed

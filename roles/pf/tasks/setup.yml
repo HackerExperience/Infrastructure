@@ -1,0 +1,12 @@
+- name: Ensure pf kernel module is loaded
+  command: kldload pf
+  failed_when: false
+  changed_when: false
+
+- name: Track this task for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: pf
+    track_file: setup

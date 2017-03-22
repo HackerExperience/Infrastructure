@@ -1,0 +1,29 @@
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: pf
+    track_file: setup
+    compare_with: "{{ ansible_local.track_pf_setup | default() }}"
+
+- include_role:
+    name: pf
+    tasks_from: setup
+  when:
+      - " {{ _proceed_pf_setup }}"
+
+- include_role:
+    name: pf
+    tasks_from: configure
+
+# - name: Track these tasks for changes
+#   include_role:
+#     name: utils
+#     tasks_from: tracker
+#   vars:
+#     from_role: pf
+#     track_file: main
+
+# - set_fact:
+#   notify: reboot server
+#   changed_when: assembled_fragment.changed

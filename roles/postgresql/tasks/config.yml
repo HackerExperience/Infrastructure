@@ -1,0 +1,62 @@
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: postgresql
+    track_file: pg_hba.conf.j2
+    compare_with: "{{ ansible_local.track_postgresql_pg_hbaconfj2 | default() }}"
+
+- name: Add pg_hba.conf fragment
+  include_role:
+    name: config
+    tasks_from: creator
+  vars:
+    from_role: postgresql
+    file_name: pg_hba.conf.j2
+    dest: /var/db/postgres/data96/pg_hba.conf
+    mode: 0600
+  when: _proceed_postgresql_pg_hbaconfj2 
+
+- command: /usr/bin/true
+  notify: reload postgres
+  changed_when: assembled_fragment.changed
+
+- name: Track pg_hba.conf template for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: postgresql
+    track_file: pg_hba.conf.j2
+
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: postgresql
+    track_file: postgresql.conf.j2
+    compare_with: "{{ ansible_local.track_postgresql_postgresqlconfj2 | default() }}"
+
+- name: Add postgresql.conf fragment
+  include_role:
+    name: config
+    tasks_from: creator
+  vars:
+    from_role: postgresql
+    file_name: postgresql.conf.j2
+    dest: /var/db/postgres/data96/postgresql.conf
+    mode: 0600
+  when: "{{ _proceed_postgresql_postgresqlconfj2 }}"
+
+- command: /usr/bin/true
+  notify: restart postgres
+  changed_when: assembled_fragment.changed
+
+- name: Track postgresql.conf template for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: postgresql
+    track_file: postgresql.conf.j2
+

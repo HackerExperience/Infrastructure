@@ -1,0 +1,26 @@
+- include_role:
+    name: utils
+    tasks_from: tracker-check
+  vars:
+    from_role: pf
+    track_file: pf.conf.j2
+    compare_with: "{{ ansible_local.track_pf_pfconfj2 | default() }}"
+
+- name: Add pf.conf fragments
+  include_role:
+    name: config
+    tasks_from: pfconf
+  vars:
+    from_role: pf
+    file_name: pf.conf.j2
+  when:
+    - "{{ _proceed_pf_pfconfj2 }}"
+
+- name: Track pf.conf template for changes
+  include_role:
+    name: utils
+    tasks_from: tracker
+  vars:
+    from_role: pf
+    track_file: pf.conf.j2
+

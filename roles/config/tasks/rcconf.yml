@@ -2,7 +2,6 @@
     name: config
     tasks_from: creator
   vars:
-    config: rcconf
     dest: /etc/rc.conf
     mode: 0644
     validate: "/bin/sh %s" 

@@ -1,0 +1,13 @@
+- name: Ensure iocage is installed
+  pkgng:
+    name: iocage
+  become: true
+
+# TODO: call iocage_prepare (iocage's own role)
+
+#- name: Get next available IP
+#  # TODO
+
+- name: Create pg jail
+  command: iocage create -c tag=pg107 ip4_addr="lo1|10.0.0.107"
+

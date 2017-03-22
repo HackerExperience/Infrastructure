@@ -1,0 +1,11 @@
+helix_user: "helix"
+helix_group: "helix"
+helix_password: "todo"
+
+elixir_user: "{{ helix_user }}"
+elixir_group: "{{ helix_group }}"
+
+helix_path: "/usr/local/helix"
+
+deployer_user: "deployer"
+helix_ssh_users: "{{ deployer_user }}"

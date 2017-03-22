@@ -1,0 +1,17 @@
+# Note: I'm using `raw` module because of bug described below
+# https://github.com/ansible/ansible/issues/5923
+- name: reload postgres
+  raw: service postgresql reload
+  # service:
+  #   name: postgresql
+  #   state: reloaded
+  failed_when: false
+  become: true
+
+- name: restart postgres
+  raw: service postgresql restart
+  # service:
+  #   name: postgresql
+  #   state: restarted
+  failed_when: false
+  become: true

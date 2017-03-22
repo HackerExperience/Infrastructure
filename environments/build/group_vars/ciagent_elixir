@@ -1,0 +1,2 @@
+elixir_user: "{{ jenkins_user }}"
+elixir_group: "{{ jenkins_group }}"

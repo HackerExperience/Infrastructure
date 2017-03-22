@@ -1,22 +1,33 @@
-- name: Install wget
+# \/ GCE Only
+# - name: Add mappings to /etc/hosts
+#   lineinfile:
+#     path: /etc/hosts
+#     line: "{{ item.ip }} {{ item.name }}"
+#   with_items:
+#     - { name: localhost, ip: "127.0.0.1" }
+#     - { name: localhost, ip: "::1" }
+#   become: true
+
+- name: Install some basic stuff
   pkgng:
-    name: wget
+    name: "{{ item }}"
+  with_items:
+    - wget
+    - ca_root_nss
+    - bash
+    - sudo
   become: true
 
-- name: Install CA root
-  pkgng:
-    name: ca_root_nss
+- name: Add ansible user
+  user:
+    name: "{{ user }}"
+    shell: "{{ user_shell }}"
+    home: "{{ user_home }}"
+    password: "{{ user_password }}"
+    groups: wheel
+    append: yes
   become: true
-
-- name: Install bash
-  pkgng:
-    name: bash
-  become: true
-
-- name: Install sudo
-  pkgng:
-    name: sudo
-  become: true
+  no_log: true
 
 - name: Add sudoers template
   template:
@@ -28,31 +39,12 @@
     backup: yes
   become: true
 
-- name: Add ansible user
-  user:
-    name: "{{ user }}"
-    uid: "{{ user_uid }}"
-    shell: "{{ user_shell }}"
-    home: "{{ user_home }}"
-    password: "{{ user_password }}"
-    groups: wheel
-    append: yes
-  become: true
-
 - name: Ensure ansible facts directory exists
   file:
     path: /etc/ansible/facts.d
     recurse: yes
     state: directory
   become: true
-
-- name: Add rc.conf fragment
-  include_role:
-    name: config
-    tasks_from: rcconf
-  vars:
-    from_role: common
-    file_name: rc.conf.j2
 
 - name: Track these tasks for changes
   include_role:

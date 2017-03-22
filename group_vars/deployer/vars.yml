@@ -1,0 +1,13 @@
+deployer_pf_macros:
+  - build_servers = "{{ hostvars }}"
+
+deployer_pf_rules:
+  - "#block in on $ext_if proto tcp from any to any port ssh"
+  - "pass in on $ext_if proto tcp from $build_servers port ssh"
+
+deployer_user: "deployer"
+deployer_group: "deployer"
+deployer_password: "todo"
+deployer_home: "/home/{{ deployer_user }}"
+
+deployer_ssh_users: "{{ deployer_user }}"

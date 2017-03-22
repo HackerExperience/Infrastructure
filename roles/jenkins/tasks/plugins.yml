@@ -1,0 +1,106 @@
+- name: Install plugins
+  jenkins_plugin:
+    name: "{{ item }}"
+    state: present
+    jenkins_home: "{{ jenkins_home }}"
+    url: https://ci.hackerexperience.com
+    params:
+      url_username: "{{ private_jenkins_user }}"
+      url_password: "{{ private_jenkins_password }}"
+  with_items:
+    - lockable-resources
+    - ghprb
+    - build-environment  # not using?
+    - workflow-aggregator
+    - pipeline-milestone-step
+    - publish-over-ssh
+    - s3
+    - ssh-slaves
+    - timestamper
+    - build-pipeline-plugin
+    - blueocean
+    - github
+    # Required stuff / dependencies
+    - ant
+    - antisamy-markup-formatter
+    - authentication-tokens
+    - blueocean-autofavorite
+    - blueocean-commons
+    - blueocean-config
+    - blueocean-dashboard
+    - blueocean-display-url
+    - blueocean-events
+    - blueocean-git-pipeline
+    - blueocean-github-pipeline
+    - blueocean-i18n
+    - blueocean-jwt
+    - blueocean-personalization
+    - blueocean-pipeline-api-impl
+    - blueocean-pipeline-editor
+    - blueocean-rest-impl
+    - blueocean-rest
+    - blueocean-web
+    - bouncycastle-api
+    - branch-api
+    - cloudbees-folder
+    - conditional-buildstep
+    - credentials-binding
+    - credentials
+    - display-url-api
+    - docker-commons
+    - docker-workflow
+    - durable-task
+    - external-monitor-job
+    - favorite
+    - git-client
+    - git-server
+    - git
+    - github-api
+    - github-branch-source
+    - github-organization-folder
+    - icon-shim
+    - jackson2-api
+    - javadoc
+    - jquery-detached
+    - jquery
+    - junit
+    - ldap
+    - mailer
+    - matrix-auth
+    - matrix-project
+    - maven-plugin
+    - metrics
+    - pam-auth
+    - parameterized-trigger
+    - pipeline-github-lib
+    - pipeline-graph-analysis
+    - pipeline-input-step
+    - pipeline-model-api
+    - pipeline-model-definition
+    - pipeline-model-extensions
+    - pipeline-stage-step
+    - pipeline-stage-tags-metadata
+    - plain-credentials
+    - pubsub-light
+    - run-condition
+    - scm-api
+    - script-security
+    - sse-gateway
+    - ssh-credentials
+    - structs
+    - token-macro
+    - variant
+    - windows-slaves
+    - workflow-api
+    - workflow-basic-steps
+    - workflow-cps-global-lib
+    - workflow-job
+    - workflow-multibranch
+    - workflow-scm-step
+    - workflow-step-api
+    - workflow-support
+    - workflow-durable-task-step
+
+  notify: restart jenkins
+  become: true
+  # become_user: jenkins

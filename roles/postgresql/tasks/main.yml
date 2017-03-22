@@ -1,0 +1,26 @@
+- name: Install Postgres
+  pkgng:
+    name: postgresql96-server
+  become: true
+
+- name: Init DB
+  command: /usr/local/etc/rc.d/postgresql initdb
+  register: _result
+  failed_when: "'oneinitdb' in _result.stdout"
+  changed_when: "'is not empty' not in _result.stderr"
+  become: true
+
+- name: Apply configurations
+  include_role:
+    name: postgresql
+    tasks_from: config
+
+# Note: I'm using `raw` module because of bug described below
+# https://github.com/ansible/ansible/issues/5923
+- name: Ensure Postgres is started
+  raw: service postgresql start
+  # service:
+  #   name: postgresql
+  #   state: started
+  failed_when: false
+  become: true

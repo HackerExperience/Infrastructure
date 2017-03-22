@@ -1,0 +1,8 @@
+# Play for deploy center
+- name: Setup Deployer
+  hosts: deployer
+
+  roles:
+    - {role: common, tags: common}
+    - {role: deployer, tags: deployer}
+    # - {role: pf, tags: pf}

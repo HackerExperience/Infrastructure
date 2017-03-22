@@ -1,0 +1,39 @@
+- name: Install Erlang
+  pkgng:
+    name: erlang
+  become: true
+
+- name: Ensure elixir directory exists
+  file:
+    path: /usr/local/share/elixir
+    state: directory
+  become: true
+
+- name: Ensure elixir user is created
+  user:
+    name: "{{ elixir_user }}"
+    createhome: false
+  become: true
+
+- name: Download & extract elixir (precompiled)
+  unarchive:
+    src: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    remote_src: true
+    dest: /usr/local/share/elixir
+    owner: "{{ elixir_user }}"
+    group: "{{ elixir_group }}"
+  become: true
+
+- name: Set executable's symlinks
+  file:
+    src: /usr/local/share/elixir/bin/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    state: link
+    owner: "{{ elixir_user }}"
+    group: "{{ elixir_group }}"
+  with_items:
+    - elixir
+    - mix
+    - iex
+    - elixirc
+  become: true

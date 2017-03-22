@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+local all all trust
+host all all 127.0.0.1/32 trust
+host all all ::1/32 trust
+
+# Other db nodes
+#host all all 192.168.105.0/24
+
+# Internal network
+host all all 192.168.0.0/16 md5

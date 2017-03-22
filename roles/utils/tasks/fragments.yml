@@ -30,6 +30,6 @@
     dest: "{{ dest }}"
     delimiter: '### START ANSIBLE FRAGMENT ###'
     mode: "{{ mode }}"
-    validate: "{{ validate | default(False) }}"
+    validate: "{{ validate | default('true %s') }}"
   register: assembled_fragment
   become: true

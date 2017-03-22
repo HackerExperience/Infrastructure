@@ -1,0 +1,23 @@
+[all]
+bastion-1 ansible_host=192.168.1.10
+nginx-infra-1 ansible_host=192.168.10.10
+
+[bastion]
+bastion-1
+
+[nginx-infra]
+nginx-infra-1
+
+[nginx:children]
+nginx-infra
+
+# common
+
+[metal:children]
+
+[cloud:children]
+bastion
+nginx-infra
+
+[freebsd:children]
+cloud

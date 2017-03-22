@@ -1,8 +1,13 @@
 ---
+all_rcconf: |
+  pf_enable="YES"
+  pflog_enable="YES"
+  zfs_enable="YES"
+  hostname="{{ inventory_hostname }}"
 
 # Ansible user information
 user: phoebe
-user_uid: 1000
+user_uid: 1003
 user_home: "/home/{{ user }}"
 user_shell: "/usr/local/bin/bash"
 user_password: "{{ private_sudo_password }}"

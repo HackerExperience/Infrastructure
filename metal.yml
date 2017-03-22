@@ -3,11 +3,11 @@
 # stuff, and then the host is ready to be used by any other playbook. 
 #
 # If you (me) just installed a metal server:
-# 1. `pkg install python2`
-# 2. `ssh-copy-id -i <ansible_private_key> root@<server_ip>`
-# 3. Add <server> to inventory file (hosts)
-# 4. Run this playbook with the `-k` flag and `--extra-vars "target=<server>".
-# 5. Listen to some heavy metal.
+# 1. `pkg install -y python2`
+# 2. Add <server> to inventory file (hosts)
+# 3. Run this playbook with the flags `-k` and `--extra-vars "target=<server>"
+#    (Playbook will fail after reboot because it no longer can login with root)
+# 4. Listen to some heavy metal.
 
 - name: Setup a bare metal host
   hosts: '{{ target }}'
