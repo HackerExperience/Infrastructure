@@ -6,7 +6,5 @@
     mode: 0774
     validate: "/bin/sh %s" 
 
-- set_fact:
-    reboot_reason: "rc.local has changed"
-  notify: reboot server
-  changed_when: assembled_fragment.changed
+- command: /bin/sh /etc/rc.local
+  when: assembled_fragment.changed
