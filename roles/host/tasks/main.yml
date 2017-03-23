@@ -1,0 +1,55 @@
+- name: Add hosts files
+  file:
+    path: "{{ host_path }}"
+    state: directory
+  become: true
+
+- copy:
+    src: "{{ item }}" 
+    dest: "{{ host_path }}/{{ item }}"
+  with_items:
+    - sshd_config.default
+    - resolv.conf.default
+    - pkgs.txt
+    - ssh_jail.pub
+  become: true
+
+- name: Install iocage
+  pkgng:
+    name: iocage
+  become: true
+
+- name: Fetch iocage release
+  command: iocage fetch release=11.0-RELEASE
+  args:
+    creates: /iocage/.ansible_fetch
+  become: true
+
+- name: Update provision.sh file
+  copy:
+    src: provision.sh
+    dest: "{{ provision_path }}"
+    mode: 0774
+  become: true
+
+- name: Enable racct
+  lineinfile:
+    path: /boot/loader.conf
+    line: kern.racct.enable="1"
+    insertafter: EOF
+  register: enable_racct
+  become: true
+
+- set_fact:
+    reboot_reason: "Boot loader has changed"
+  notify: reboot server
+  changed_when: enable_racct.changed
+  when: enable_racct.changed
+
+- include_role:
+    name: host
+    tasks_from: provision
+  when:
+    - provision is defined
+  tags:
+    provision

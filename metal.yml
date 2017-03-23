@@ -13,6 +13,9 @@
   hosts: '{{ target }}'
   remote_user: root
 
+  vars:
+    ansible_host: "{{ public_ip }}"
+
   roles:
     - {role: common, tags: common}
     - {role: sshd, tags: sshd}

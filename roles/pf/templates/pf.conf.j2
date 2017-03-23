@@ -13,6 +13,7 @@ icmp6_types_out = "{ echoreq, unreach, neighbrsol, routersol, timex, paramprob }
 
 ### macro name for external interface.
 ext_if = "{{ external_network_interface }}"
+int_if = "{{ internal_network_interface }}"
 
 # ansible macros
 {%- for group in group_names %} 
@@ -28,8 +29,18 @@ ext_if = "{{ external_network_interface }}"
 ### packets are reassembled.
 scrub in on $ext_if all fragment reassemble
 
+{# and then God said: thou shalt not understand Jinja's whitespace control #}
+{%- for group in group_names %} 
+  {%- set group_rules = group + '_pf_nat' -%}
+  # NAT rules for group {{ group }}
+  {% for rule in hostvars[inventory_hostname][group_rules] | default({}) -%}
+    {{ rule }}
+  {% endfor -%}
+{%- endfor -%}
+
+
 ### set a default deny everything policy.
-block all
+#block all
 
 ### exercise antispoofing on the external interface, but add the local
 ### loopback interface as an exception, to prevent services utilizing the
@@ -95,7 +106,6 @@ pass in on $ext_if proto tcp from any to any port ssh flags S/SA
 
 ### custom rules set by ansible
 
-{# and then God said: thou shalt not understand Jinja's whitespace control #}
 {%- for group in group_names %} 
   {%- set group_rules = group + '_pf_rules' -%}
   # Rules for group {{ group }}
@@ -106,6 +116,6 @@ pass in on $ext_if proto tcp from any to any port ssh flags S/SA
 
 
 ### protect from ssh flood
-table <sshabuse> persist
-block in quick from <sshabuse>
-pass in on $ext_if proto tcp to any port ssh flags S/SA keep state (max-src-conn 10, max-src-conn-rate 3/5, overload <sshabuse> flush)
+#table <sshabuse> persist
+#block in quick from <sshabuse>
+#pass in on $ext_if proto tcp to any port ssh flags S/SA keep state (max-src-conn 10, max-src-conn-rate 3/5, overload <sshabuse> flush)

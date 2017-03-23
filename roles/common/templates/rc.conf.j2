@@ -9,8 +9,15 @@
   {{ hostvars[inventory_hostname][group_entries] | default ("") }}
 {%- endfor -%}
 
+# Private network
 {% if private_ip is defined %}
   ifconfig_{{ internal_network_interface }}="inet {{ private_ip }}/16"
 {% else %}
   ifconfig_{{ internal_network_interface }}="inet {{ ansible_host }}/16"
+{% endif %}
+
+# Public network
+{% if ipv4 is defined %}
+ifconfig_igb0="inet {{ ipv4 }} netmask 255.255.255.0 broadcast {{ ipv4_broadcast }}"
+defaultrouter="{{ ipv4_router }}"
 {% endif %}

@@ -1,7 +1,7 @@
 - name: Install plugins
   jenkins_plugin:
     name: "{{ item }}"
-    state: present
+    state: latest
     jenkins_home: "{{ jenkins_home }}"
     url: https://ci.hackerexperience.com
     params:
@@ -10,10 +10,8 @@
   with_items:
     - lockable-resources
     - ghprb
-    - build-environment  # not using?
     - workflow-aggregator
     - pipeline-milestone-step
-    - publish-over-ssh
     - s3
     - ssh-slaves
     - timestamper
@@ -24,6 +22,7 @@
     - ant
     - antisamy-markup-formatter
     - authentication-tokens
+    - aws-java-sdk
     - blueocean-autofavorite
     - blueocean-commons
     - blueocean-config
@@ -44,6 +43,7 @@
     - branch-api
     - cloudbees-folder
     - conditional-buildstep
+    - copyartifact
     - credentials-binding
     - credentials
     - display-url-api
@@ -72,6 +72,7 @@
     - metrics
     - pam-auth
     - parameterized-trigger
+    - pipeline-build-step
     - pipeline-github-lib
     - pipeline-graph-analysis
     - pipeline-input-step
@@ -80,12 +81,14 @@
     - pipeline-model-extensions
     - pipeline-stage-step
     - pipeline-stage-tags-metadata
+    - pipeline-stage-view
     - plain-credentials
     - pubsub-light
     - run-condition
     - scm-api
     - script-security
     - sse-gateway
+    - ssh-agent
     - ssh-credentials
     - structs
     - token-macro
@@ -93,6 +96,7 @@
     - windows-slaves
     - workflow-api
     - workflow-basic-steps
+    - workflow-cps
     - workflow-cps-global-lib
     - workflow-job
     - workflow-multibranch

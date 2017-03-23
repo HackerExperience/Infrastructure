@@ -1,0 +1,8 @@
+- assert:
+    that:
+      - "'jail' in group_names"
+
+# # Workaround to make ansible happy
+- name: Force first-run of pkg
+  command: pkg install python2
+  become: true
