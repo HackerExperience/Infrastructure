@@ -1,0 +1,8 @@
+host_rcconf: |
+  iocage_enable="YES"
+
+host_path: "/usr/local/host"
+provision_path: "/usr/local/bin/provision"
+
+host_pf_nat:
+  - nat on $ext_if from $int_if:network to any -> ($ext_if)

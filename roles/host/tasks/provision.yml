@@ -1,0 +1,36 @@
+- name: Ensure required stuff is here
+  assert:
+    that:
+      - "{{ item }} is defined"
+  with_items:
+    - provision
+    - jail_name
+    - jail_ip
+    - jail_args
+
+- assert:
+    that:
+      - provision == "1"
+
+- assert:
+    that:
+      - hostvars["{{ jail_name }}"] is defined
+      - "'{{ jail_name }}' in groups['jail']"
+    msg: "First add {{ jail_name }} to inventory list"
+
+- name: Run provision.sh
+  command: |
+    /usr/local/bin/provision
+    --name "{{ jail_name }}"
+    --private-ip "{{ jail_ip }}"
+    --interface "{{ internal_network_interface }}"
+    " {{ jail_args }}"
+  register: provision_result
+  become: true
+
+- debug:
+    msg: "{{ provision_result }}"
+
+- assert:
+    that:
+      - provision_result.rc == 0

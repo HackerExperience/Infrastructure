@@ -2,7 +2,13 @@
 jenkins-1 ansible_host=192.168.20.10
 deployer-1 ansible_host=192.168.99.99
 build-elixir-1 ansible_host=192.168.21.10
+build-elixir-2 ansible_host=192.168.21.11
+build-elixir-3 ansible_host=192.168.21.12
+build-elixir-4 ansible_host=192.168.21.13
 build-helix-1 ansible_host=192.168.22.10
+build-helix-2 ansible_host=192.168.22.11
+host-build-1 ansible_host=192.168.3.10
+jenkins-1 ansible_host=192.168.20.10
 
 [ci:children]
 cimaster
@@ -17,9 +23,13 @@ ciagent_helix
 
 [ciagent_elixir]
 build-elixir-1
+build-elixir-2
+build-elixir-3
+build-elixir-4
 
 [ciagent_helix]
 build-helix-1
+build-helix-2
 
 [deployer]
 deployer-1
@@ -30,6 +40,7 @@ deployer-1
 build-helix-1
 
 [metal:children]
+host
 
 [cloud:children]
 ci
@@ -37,8 +48,14 @@ deployer
 
 [postgresql:children]
 ciagent_helix
-ciagent_elixir
 
 # Hosts running FreeBSD OS
 [freebsd:children]
 cloud
+host
+
+[host]
+host-build-1
+
+[jail:children]
+ci

@@ -1,18 +1,4 @@
-metal_rcconf: 
->
-  ### Added by OVH - block start
-  # Network configuration (IPv4)
-  ifconfig_igb0="inet 192.99.100.172 netmask 255.255.255.0 broadcast 192.99.100.255"
-  defaultrouter="192.99.100.254"
-
-  # Network configuration (IPv6)
-  ifconfig_igb0_ipv6="inet6 2607:5300:0060:cfbe:: prefixlen 64 accept_rtadv no_radr"
-  ipv6_network_interfaces="igb0"
-  ipv6_default_interface="igb0"
-  ipv6_defaultrouter="2607:5300:0060:cfff:ff:ff:ff:ff"
-  ipv6_route_ovhgw="2607:5300:0060:cfff:ff:ff:ff:ff -prefixlen 128 -interface igb0"
-  ipv6_static_routes="ovhgw"
-
+metal_rcconf: |
   # Various options
   dumpdev="AUTO"
   clear_tmp_enable="YES"
@@ -22,7 +8,3 @@ metal_rcconf:
   ntpd_enable="YES"
   sshd_enable="YES"
   local_unbound_enable="YES"
-  ### Added by OVH - block end
-
-
-external_network_interface: "re0"

@@ -1,0 +1,7 @@
+- name: Setup Host
+  hosts: "{{ target if provision is defined else 'host' }}"
+
+  roles:
+    - {role: common, tags: common}
+    - {role: host, tags: host}
+    - {role: pf, tags: pf}

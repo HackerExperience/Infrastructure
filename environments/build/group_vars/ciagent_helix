@@ -1,2 +1,8 @@
-# helix_user: "{{ jenkins_user }}"
-# helix_group: "{{ jenkins_group }}"
+helix_user: "{{ jenkins_user }}"
+helix_group: "{{ jenkins_group }}"
+
+deployer_user: "{{ jenkins_user }}"
+deployer_group: "{{ jenkins_group }}"
+
+elixir_user: "{{ helix_user }}"
+elixir_group: "{{ helix_group }}"

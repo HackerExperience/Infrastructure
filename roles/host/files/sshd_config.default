@@ -1,6 +1,5 @@
-# {{ ansible_managed }}
 #	$OpenBSD: sshd_config,v 1.98 2016/02/17 05:29:04 djm Exp $
-#	$FreeBSD$
+#	$FreeBSD: releng/11.0/crypto/openssh/sshd_config 296633 2016-03-11 00:15:29Z des $
 
 # This is the sshd server system-wide configuration file.  See
 # sshd_config(5) for more information.
@@ -15,17 +14,13 @@
 # Note that some of FreeBSD's defaults differ from OpenBSD's, and
 # FreeBSD has a few additional options.
 
-Port 22
+#Port 22
 #AddressFamily any
-
-{# {% if not 'cloud' in group_names %} #}
-{# ListenAddress {{ ansible_host }} #}
-{# {% endif %} #}
-
-
+#ListenAddress 0.0.0.0
+#ListenAddress ::
 
 # The default requires explicit activation of protocol 1
-Protocol 2
+#Protocol 2
 
 # HostKey for protocol version 1
 #HostKey /etc/ssh/ssh_host_key
@@ -50,7 +45,7 @@ Protocol 2
 # Authentication:
 
 #LoginGraceTime 2m
-PermitRootLogin no
+PermitRootLogin yes
 #StrictModes yes
 #MaxAuthTries 6
 #MaxSessions 10
@@ -60,31 +55,31 @@ PermitRootLogin no
 
 # The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
 #AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2
-#AuthorizedKeysFile .ssh/authorized_keys
+
 #AuthorizedPrincipalsFile none
 
 #AuthorizedKeysCommand none
 #AuthorizedKeysCommandUser nobody
 
 # For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
-RhostsRSAAuthentication no
+#RhostsRSAAuthentication no
 # similar for protocol version 2
-HostbasedAuthentication no
+#HostbasedAuthentication no
 # Change to yes if you don't trust ~/.ssh/known_hosts for
 # RhostsRSAAuthentication and HostbasedAuthentication
 #IgnoreUserKnownHosts no
 # Don't read the user's ~/.rhosts and ~/.shosts files
-IgnoreRhosts yes
+#IgnoreRhosts yes
 
 # Change to yes to enable built-in password authentication.
-PasswordAuthentication no
-PermitEmptyPasswords no
+#PasswordAuthentication no
+#PermitEmptyPasswords no
 
 # Change to no to disable PAM authentication
-ChallengeResponseAuthentication no 
+#ChallengeResponseAuthentication yes
 
 # Kerberos options
-KerberosAuthentication no
+#KerberosAuthentication no
 #KerberosOrLocalPasswd yes
 #KerberosTicketCleanup yes
 #KerberosGetAFSToken no
@@ -125,29 +120,19 @@ KerberosAuthentication no
 #MaxStartups 10:30:100
 #PermitTunnel no
 #ChrootDirectory none
-#UseBlacklist no
 #VersionAddendum FreeBSD-20160310
 
 # no default banner path
 #Banner none
 
 # override default of no subsystems
-# Subsystem	sftp	/usr/libexec/sftp-server
+Subsystem	sftp	/usr/libexec/sftp-server
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
-X11Forwarding no
+#	X11Forwarding no
 #	AllowTcpForwarding no
 #	PermitTTY no
 #	ForceCommand cvs server
 
-AllowUsers {{ user }}
-
-{% for group in group_names %} 
-  {%- set group_entries = group + '_ssh_users' %}
-  {% set allowed_user = hostvars[inventory_hostname][group_entries] %}
-  {% if allowed_user is defined %}
-AllowUsers {{ allowed_user }}
-  {% endif %}
-{% endfor %}
-
+AllowUsers root

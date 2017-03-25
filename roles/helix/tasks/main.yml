@@ -1,10 +1,3 @@
-- name: force helix
-  file:
-    name: /home/helix/touch
-    state: touch
-  become: true
-  become_user: helix
-
 - name: Add deployer user
   user:
     name: "{{ deployer_user }}"
