@@ -2,6 +2,6 @@
   hosts: "{{ target if provision is defined else 'host' }}"
 
   roles:
-    - {role: common, tags: common}
+    - {role: common, tags: common, when: provision is not defined}
     - {role: host, tags: host}
     - {role: pf, tags: pf}

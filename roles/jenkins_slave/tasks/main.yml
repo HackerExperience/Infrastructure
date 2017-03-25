@@ -72,7 +72,7 @@
   with_items:
     - git
     - gmake  # required to compile comeonin
-    - aws
+    - awscli
   become: true
 
 - name: Copy aws credentials
