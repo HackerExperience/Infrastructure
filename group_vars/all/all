@@ -1,9 +1,15 @@
 ---
 all_rcconf: |
+  sshd_enable="YES"
   pf_enable="YES"
   pflog_enable="YES"
   zfs_enable="YES"
   hostname="{{ inventory_hostname }}"
+  ntpd_enable="YES"
+  accounting_enable="YES"
+  clear_tmp_enable="YES"
+  dumpdev="AUTO"
+  local_unbound_enable="YES"
 
 # Ansible user information
 user: phoebe

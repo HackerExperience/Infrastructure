@@ -9,6 +9,12 @@
   environment:
     ASSUME_ALWAYS_YES: "yes"
 
+  pre_tasks:
+    - assert:
+        that:
+          - "'host' not in group_names"
+          - "'jail' in group_names"
+
   roles:
     - {role: jail, tags: jail}
     - {role: common, tags: common}

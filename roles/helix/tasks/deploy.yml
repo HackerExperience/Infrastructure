@@ -59,12 +59,6 @@
   become: true
   become_user: "{{ helix_user }}"
 
-- name: Output migration result
-  debug:
-    msg: "{{ _migrations_result.stdout_lines }}"
-- debug:
-    msg: "{{ _migrations_result.stderr_lines }}"
-
 - name: Run (foreground, temp)
   command: "{{ helix_path }}/bin/helix start"
   become: true

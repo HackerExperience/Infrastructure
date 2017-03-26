@@ -9,11 +9,6 @@ cloud_google_rcconf: |
 
 cloud_rcconf: |
   ifconfig_vtnet0="DHCP"
-  dumpdev="AUTO"
-  accounting_enable="YES"
-  ntpd_enable="YES"
-  sshd_enable="YES"
-  local_unbound_enable="YES"
 
 cloud_user: "{{ system_user }}"
 external_network_interface: "vtnet0"

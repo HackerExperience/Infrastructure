@@ -1,13 +1,11 @@
 - name: Setup Host
-  hosts: host
+  hosts: "{{ target }}"
 
   pre_tasks:
     - assert:
         that:
-          - ipv4 is defined
           - "'jail' not in group_names"
 
   roles:
-    - {role: common, tags: common}
     - {role: host, tags: host}
-    - {role: pf, tags: pf}
+    - {role: provision, tags: provision}
