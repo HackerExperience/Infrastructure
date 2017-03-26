@@ -1,0 +1,8 @@
+- name: Setup build database
+  hosts: build-database
+
+  roles:
+    - {role: common, tags: common}
+    - {role: postgresql, tags: postgresql}
+    - {role: database_helix, tags: database_helix}
+    # - {role: pf, tags: pf}

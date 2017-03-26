@@ -13,6 +13,7 @@ DISK_QUOTA="50G"
 MAX_RAM="8G"
 CPU_PIN=""
 PRIORITY="99"
+SYSVIPC=""
 
 while [[ $# -gt 1 ]]; do
     key="$1"
@@ -56,6 +57,10 @@ while [[ $# -gt 1 ]]; do
             ;;
         --priority)
             PRIORITY="$2"
+            shift
+            ;;
+        --allow-sysvipc)
+            SYSVIPC="1"
             shift
             ;;
         *)
@@ -104,6 +109,10 @@ iocage set dedup=on "$JAIL_NAME"
 iocage set priority="$PRIORITY" "$JAIL_NAME"
 # set resolver
 iocage set resolver='nameserver 8.8.8.8;nameserver 8.8.4.4' "$JAIL_NAME"
+
+if [ -n "$SYSVIPC" ]; then
+    iocage set allow_sysvipc=1 "$JAIL_NAME"
+fi
 
 # resource limits
 iocage set rlimits=on "$JAIL_NAME"

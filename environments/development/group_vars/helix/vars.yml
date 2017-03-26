@@ -1,10 +1,11 @@
 helix_database_username: helix
 helix_database_password: "{{ private_helix_database_password }}"
 helix_database_host: "{{ ansible_host }}"
-helix_database_pool_size: 5
+helix_database_pool_size: 3
 
 helix_environment:
   HELIX_JWT_KEY: "{{ private_helix_jwt_key }}"
+  HELIX_DB_PREFIX: "interactive"
   HELIX_DB_USER: "{{ helix_database_username }}"
   HELIX_DB_PASS: "{{ helix_database_password }}"
   HELIX_DB_HOST: "{{ helix_database_host }}"

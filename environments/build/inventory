@@ -7,6 +7,7 @@ build-elixir-3 ansible_host=192.168.21.12
 build-elixir-4 ansible_host=192.168.21.13
 build-helix-1 ansible_host=192.168.22.10
 build-helix-2 ansible_host=192.168.22.11
+build-database-1 ansible_host=192.168.23.10
 deployer-1 ansible_host=192.168.99.99
 
 [ci:children]
@@ -30,13 +31,17 @@ build-elixir-4
 build-helix-1
 build-helix-2
 
+[build-database]
+build-database-1
+
 [deployer]
 deployer-1
 
 # --- common ---
 
-[helix]
-build-helix-1
+[helix:children]
+ciagent_helix
+build-database
 
 [metal:children]
 host
@@ -44,7 +49,7 @@ host
 [cloud:children]
 
 [postgresql:children]
-ciagent_helix
+build-database
 
 # Hosts running FreeBSD OS
 [freebsd:children]
@@ -52,6 +57,7 @@ cloud
 host
 ci
 deployer
+build-database
 
 [host]
 host-build-1
@@ -59,3 +65,4 @@ host-build-1
 [jail:children]
 ci
 deployer
+build-database

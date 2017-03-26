@@ -7,4 +7,5 @@
     - {role: jenkins_slave, tags: jenkins_slave}
     - {role: elixir, tags: elixir}
     - {role: helix, tags: helix}
+    - {role: ciagent_helix, tags: ciagent_helix}
     # - {role: pf, tags: pf}
