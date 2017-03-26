@@ -74,9 +74,10 @@ if [ -z "$DEPLOY_VERSION" ]; then
     exit "You did not specify which version to deploy, you fool!"
 fi
 
-if [ "$DEPLOY_ENV" == 'staging' ] && [ -z "$SERVER_ID" ]; then
-    exit 'You did not specify which server id to deploy to'
-else
+if [ "$DEPLOY_ENV" == 'development' ]; then
+    if [ -z "$SERVER_ID" ]; then
+        exit 'You did not specify which server id to deploy to'
+    fi
     LIMIT="interactive-$SERVER_ID"
 fi
 
