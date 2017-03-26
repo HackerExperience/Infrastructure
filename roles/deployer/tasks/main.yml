@@ -16,7 +16,7 @@
     name: "{{ deployer_user }}"
     password: "{{ deployer_password }}"
     createhome: true
-  # no_log: true
+  no_log: true
   become: true
 
 - name: Install python2, bash
