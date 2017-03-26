@@ -8,6 +8,12 @@
       url_username: "{{ private_jenkins_user }}"
       url_password: "{{ private_jenkins_password }}"
   with_items:
+    - saferestart
+    - html5-notifier-plugin
+    - embeddable-build-status
+    - global-build-status
+    - greeballs
+    - ws-cleanup
     - lockable-resources
     - ghprb
     - workflow-aggregator
@@ -84,6 +90,7 @@
     - pipeline-stage-view
     - plain-credentials
     - pubsub-light
+    - resource-disposer
     - run-condition
     - scm-api
     - script-security

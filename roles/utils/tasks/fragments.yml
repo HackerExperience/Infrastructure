@@ -33,3 +33,8 @@
     validate: "{{ validate | default('true %s') }}"
   register: assembled_fragment
   become: true
+
+- set_fact:
+    source_file: null
+    fragment_name: null
+    config: null

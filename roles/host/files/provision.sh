@@ -133,7 +133,7 @@ JAIL_PATH="/iocage/jails/$JAIL_ID/root"
 
 # copy initial files
 cp "$HOST_PATH"/sshd_config.default "$JAIL_PATH"/etc/ssh/sshd_config
-#cp "$HOST_PATH"/resolv.conf.default "$JAIL_PATH"/etc/resolv.conf
+cp "$HOST_PATH"/resolv.conf.default "$JAIL_PATH"/etc/resolv.conf
 
 mkdir "$JAIL_PATH"/root/.ssh
 cat "$HOST_PATH"/ssh_jail.pub >> "$JAIL_PATH"/root/.ssh/authorized_keys

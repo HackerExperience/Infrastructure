@@ -45,11 +45,3 @@
   notify: reboot server
   changed_when: enable_racct.changed
   when: enable_racct.changed
-
-- include_role:
-    name: host
-    tasks_from: provision
-  when:
-    - provision is defined
-  tags:
-    provision

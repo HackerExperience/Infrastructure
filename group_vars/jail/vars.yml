@@ -1,0 +1,2 @@
+jail_rcconf: |
+  sshd_enable="YES"

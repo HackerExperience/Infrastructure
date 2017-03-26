@@ -4,11 +4,11 @@
   become_user: postgres
 
 - name: Create role helix
-  command: psql -c "create user helix password 'helix'"
+  command: psql -c "create user helix password '{{ private_helix_database_password }}'"
   register: _result
   changed_when: "'create role' in _result.stdout"
   failed_when: false
-  #no_log: true
+  no_log: true
   become: true
   become_user: postgres
 

@@ -82,7 +82,7 @@ root ALL=(ALL) ALL
   {{ cloud_user }} ALL=NOPASSWD: ALL
 {% endif -%}
 {% if 'helix' in group_names -%}
-  {{ deployer_user }} ALL=({{ helix_user }}) NOPASSWD: ALL
+  {{ deployer_user }} ALL=(ALL) NOPASSWD: ALL
 {% endif -%}
 
 

@@ -1,0 +1,11 @@
+- name: Setup Helix box
+  hosts: helix
+
+  environment: "{{ helix_environment }}"
+
+  roles:
+    - {role: common, tags: common}
+    - {role: elixir, tags: elixir}
+    - {role: helix, tags: helix}
+    - {role: postgresql, tags: postgresql}
+    # - {role: pf, tags: pf}

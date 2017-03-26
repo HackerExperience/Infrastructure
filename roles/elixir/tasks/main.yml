@@ -1,3 +1,9 @@
+- name: Create elixir user
+  user:
+    name: "{{ elixir_user }}"
+    group: "{{ elixir_group }}"
+  become: true
+
 - name: Install Erlang
   pkgng:
     name: erlang
@@ -15,16 +21,22 @@
     createhome: false
   become: true
 
-- name: Download & extract elixir (precompiled)
+- name: Get elixir (precompiled)
+  get_url:
+    url: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    dest: /tmp/elixir.zip
+  become: true
+
+- name: Extract elixir
   unarchive:
-    src: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    src: /tmp/elixir.zip
     remote_src: true
     dest: /usr/local/share/elixir
     owner: "{{ elixir_user }}"
     group: "{{ elixir_group }}"
   become: true
 
-- name: Set executable's symlinks
+- name: Set symlinks for elixir
   file:
     src: /usr/local/share/elixir/bin/{{ item }}
     dest: /usr/local/bin/{{ item }}
@@ -38,14 +50,19 @@
     - elixirc
   become: true
 
+- name: Install git
+  pkgng:
+    name: git
+  become: true
+
 - name: Download dialyxir
   git:
     repo: https://github.com/jeremyjh/dialyxir
-    dest: "{{ dialyxir_path  }}"
+    dest: /usr/local/dialyxir
   become: true
 
 - file:
-    path: "{{ dialyxir_path  }}"
+    path: /usr/local/dialyxir
     state: directory
     owner: "{{ elixir_user }}"
     group: "{{ elixir_group }}"
@@ -54,7 +71,7 @@
 - name: Install dialyxir
   command: "{{ item }}"
   args:
-    chdir: "{{ dialyxir_path  }}"
+    chdir: /usr/local/dialyxir
   with_items:
     - mix local.hex --force
     - mix local.rebar --force

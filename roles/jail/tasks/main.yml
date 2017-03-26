@@ -1,6 +1,7 @@
 - assert:
     that:
       - "'jail' in group_names"
+      - "'host' not in group_names"
 
 # # Workaround to make ansible happy
 - name: Force first-run of pkg

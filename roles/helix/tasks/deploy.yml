@@ -35,14 +35,6 @@
     - "{{ helix_path }}/src"
   become: true
 
-# - name: Clone master (temp)
-#   git:
-#     repo: https://github.com/HackerExperience/Helix.git
-#     dest: "{{ helix_path }}/src"
-#     version: "{{ branch }}"
-#   become: true
-#   become_user: "{{ helix_user }}"
-
 - name: Download release
   s3:
     aws_access_key: "{{ private_aws_s3_release_access_key }}"
@@ -62,65 +54,13 @@
   become: true
   become_user: "{{ helix_user }}"
 
-- name: Run migrations
-  command: "{{ helix_path }}/bin/helix ecto_migrate"
+- name: Run release commands
+  command: "{{ helix_path }}/bin/helix {{ item }}"
+  with_items:
+    - ecto_create
+    - ecto_migrate
   become: true
   become_user: "{{ helix_user }}"
-
-# - name: Download source
-#   s3:
-#     aws_access_key: "{{ private_aws_s3_release_access_key }}"
-#     aws_secret_key: "{{ private_aws_s3_release_secret_key }}"
-#     bucket: he2-releases
-#     object: "/helix/{{ branch }}/{{ version }}_src.tar.gz"
-#     dest: "{{ helix_path }}/src/src.tar.gz"
-#     mode: get
-#   become: true
-#   become_user: "{{ helix_user }}"
-
-# - name: Extract source
-#   command: tar xf src.tar.gz
-#   args:
-#     chdir: "{{ helix_path }}/src"
-#   become: true
-#   become_user: "{{ helix_user }}"
-
-
-# - name: Replace migrations
-#   command: "{{ helix_path }}/bin/helix replace_migrations lib/ src/apps/"
-#   register: _result
-#   become: true
-#   become_user: "{{ helix_user }}"
-#   failed_when: _result.rc != 0
-#   changed_when: true
-
-#-  name: Prepare src dir for ecto run
-#   shell: "bash -lc '{{ item }}'"
-#   args:
-#     chdir: "{{ helix_path }}/src"
-#   with_items:
-#     - mix local.hex --force
-#     - mix local.rebar --force
-#     - mix clean
-#     - mix deps.get
-#     - mix compile
-#   become: true
-#   become_user: "{{ helix_user }}"
-
-# - name: Run migrations
-#   command: mix ecto.create && mix ecto.migrate
-#   args:
-#     chdir: "{{ helix_path }}/src"
-#   register: _migrations_result
-#   changed_when: true
-#   become: true
-#   become_user: "{{ helix_user }}"
-
-- name: Output migration result
-  debug:
-    msg: "{{ _migrations_result.stdout_lines }}"
-- debug:
-    msg: "{{ _migrations_result.stderr_lines }}"
 
 - name: Run (foreground, temp)
   command: "{{ helix_path }}/bin/helix start"

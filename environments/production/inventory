@@ -1,15 +1,14 @@
 [all]
-helix-blue-1 ansible_host=192.168.100.10
-database-1 ansible_host=192.168.110.10
+helix-1 ansible_host=192.168.101.10
 
 [helix]
-helix-blue-1
+helix-1
 
 [database]
-database-1
+helix-1
 
 [blue]
-helix-blue-1
+helix-1
 
 # --- common ---
 
