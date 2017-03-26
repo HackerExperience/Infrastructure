@@ -1,0 +1,31 @@
+[all]
+interactive-1 ansible_host=192.168.250.10
+interactive-2 ansible_host=192.168.250.11
+
+[helix]
+interactive-1
+interactive-2
+
+[database]
+interactive-1
+interactive-2
+
+[blue]
+interactive-1
+interactive-2
+
+# --- common ---
+
+[metal:children]
+
+[cloud:children]
+helix
+database
+
+[postgresql:children]
+database
+
+# Hosts running FreeBSD OS
+[freebsd:children]
+helix
+database
