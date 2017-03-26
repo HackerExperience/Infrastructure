@@ -1,0 +1,21 @@
+# Temp, while we are at simple cloud server
+pg_max_connections: 500
+pg_shared_buffers: '128MB'
+pg_fsync: 'on'
+pg_full_page_writes: 'on'
+pg_synchronous_commit: 'on'
+pg_checkpoint_timeout: '5min'
+
+# Below is when we move to real production server
+# Some (or most) of it might need to be added to the template
+# Note: requires several changes, plus work on system tunnables
+#pg_max_connections: 5000
+#pg_shared_buffers: '16GB'
+#pg_effective_cache_size: '16GB'
+#pg_workmem: '83866kB'
+#pg_fsync: 'on'
+#pg_min_wal_size: '1GB'
+#pg_max_wal_size: '2GB'
+#pg_checkpoint_completion_target: '0.7'
+#pg_default_statistics_target: 100
+#pg_maintenance_work_mem: '1GB'

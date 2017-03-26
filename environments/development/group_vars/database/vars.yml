@@ -1,0 +1,6 @@
+pg_max_connections: 100
+pg_shared_buffers: '32MB'
+pg_fsync: 'off'
+pg_full_page_writes: 'off'
+pg_synchronous_commit: 'off'
+pg_checkpoint_timeout: '1h'
