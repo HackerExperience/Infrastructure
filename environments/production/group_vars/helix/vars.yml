@@ -4,6 +4,7 @@ helix_database_host: "{{ hostvars[groups['database'][0]]['ansible_host'] }}"
 helix_database_pool_size: 10
 
 helix_environment: 
+  HELIX_JWT_KEY: "{{ private_helix_jwt_key }}"
   HELIX_DB_USER: "{{ helix_database_username }}"
   HELIX_DB_PASS: "{{ helix_database_password }}"
   HELIX_DB_HOST: "{{ helix_database_host }}"
