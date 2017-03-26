@@ -54,8 +54,11 @@
   become: true
   become_user: "{{ helix_user }}"
 
-- name: Run migrations
-  command: "{{ helix_path }}/bin/helix ecto_migrate"
+- name: Run release commands
+  command: "{{ helix_path }}/bin/helix {{ item }}"
+  with_items:
+    - ecto_create
+    - ecto_migrate
   become: true
   become_user: "{{ helix_user }}"
 

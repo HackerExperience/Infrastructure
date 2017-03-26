@@ -74,10 +74,18 @@
     key: "{{ lookup('file', '/home/renato/.ssh/deployer.pub') }}"
   become: true
 
+- name: Upload deployer ansible.cfg
+  copy:
+    src: ansible.cfg
+    dest: "{{ deployer_home }}/.ansible.cfg"
+  become: true
+  become_user: "{{ deployer_user }}"
+
 - name: Clone Infra playbooks
   git:
     repo: https://github.com/hackerexperience/infrastructure.git
     dest: /usr/local/infrastructure
+    force: true
   become: true
 
 - name: Infra path file permissions
@@ -88,6 +96,15 @@
     group: "{{ deployer_group }}"
     recurse: yes
   become: true
+
+# Below is not necessary, just to make it explicit we are not using
+# the ansible.cfg bundled with the repository
+- name: Remove ansible.cfg from playbook
+  file:
+    path: /usr/local/infrastructure/ansible.cfg
+    state: absent
+  become: true
+  become_user: "{{ deployer_user }}"
 
 - name: Upload vault-password to deployer
   copy:

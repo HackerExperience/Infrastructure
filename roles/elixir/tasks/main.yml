@@ -21,16 +21,22 @@
     createhome: false
   become: true
 
-- name: Download & extract elixir (precompiled)
+- name: Get elixir (precompiled)
+  get_url:
+    url: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    dest: /tmp/elixir.zip
+  become: true
+
+- name: Extract elixir
   unarchive:
-    src: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    src: /tmp/elixir.zip
     remote_src: true
     dest: /usr/local/share/elixir
     owner: "{{ elixir_user }}"
     group: "{{ elixir_group }}"
   become: true
 
-- name: Set executable's symlinks
+- name: Set symlinks for elixir
   file:
     src: /usr/local/share/elixir/bin/{{ item }}
     dest: /usr/local/bin/{{ item }}
