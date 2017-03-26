@@ -1,0 +1,12 @@
+helix_database_username: helix
+helix_database_password: "{{ private_helix_database_password }}"
+helix_database_host: "{{ ansible_host }}"
+helix_database_pool_size: 5
+
+helix_environment: 
+  HELIX_DB_USER: "{{ helix_database_username }}"
+  HELIX_DB_PASS: "{{ helix_database_password }}"
+  HELIX_DB_HOST: "{{ helix_database_host }}"
+  HELIX_DB_POOL_SIZE: "{{ helix_database_pool_size }}"
+  REPLACE_OS_VARS: "true"
+  MIX_ENV: "prod"
