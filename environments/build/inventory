@@ -43,6 +43,9 @@ deployer-1
 ciagent_helix
 build-database
 
+[database:children]
+build-database
+
 [metal:children]
 host
 
