@@ -6,7 +6,7 @@
     mode: 0644
     validate: "/sbin/pfctl -vnf %s"
 
-- command: /bin/true
+- command: /usr/bin/true
   delegate_to: localhost
   notify: restart pf
   changed_when: assembled_fragment.changed

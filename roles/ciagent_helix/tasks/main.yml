@@ -1,0 +1,9 @@
+# Builds will be triggered by jenkins, directly, so we have to
+# persist Helix environments into the node.
+- name: Save helix env variables
+  template:
+     src: profile.j2
+     dest: "{{ jenkins_home }}/.profile"
+     mode: 0774
+  become: true
+  become_user: "{{ jenkins_user }}"

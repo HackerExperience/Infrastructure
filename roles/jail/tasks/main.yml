@@ -3,6 +3,16 @@
       - "'jail' in group_names"
       - "'host' not in group_names"
 
+# sanity check
+- name: Ensure jail is running on the correct node
+  command: /bin/hostname
+  register: hostname
+  changed_when: false
+
+- assert:
+    that:
+      "inventory_hostname == '{{ hostname.stdout }}'"
+
 # # Workaround to make ansible happy
 - name: Force first-run of pkg
   command: pkg install python2

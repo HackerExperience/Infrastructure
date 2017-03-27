@@ -4,7 +4,7 @@
   become_user: postgres
 
 - name: Create role helix
-  command: psql -c "create user helix password '{{ private_helix_database_password }}'"
+  command: psql -c "create user {{ helix_database_username }} password '{{ private_helix_database_password }}'"
   register: _result
   changed_when: "'create role' in _result.stdout"
   failed_when: false
@@ -13,7 +13,7 @@
   become_user: postgres
 
 - name: Create schema `helix`
-  command: psql -c "create schema authorization helix"
+  command: psql -c "create schema authorization {{ helix_database_username }}"
   register: _result
   changed_when: "'create schema' in _result.stdout"
   failed_when: false
@@ -21,18 +21,18 @@
   become_user: postgres
 
 - name: Grant privileges for role helix
-  command: psql -c "grant all on schema helix to helix"
+  command: psql -c "grant all on schema {{ helix_database_username }} to {{ helix_database_username }}"
   become: true
   become_user: postgres
   
-- command: psql -c "grant all on all tables in schema helix to helix"
+- command: psql -c "grant all on all tables in schema {{ helix_database_username }} to {{ helix_database_username }}"
   become: true
   become_user: postgres
 
-- command: psql -c "grant all on all sequences in schema helix to helix"
+- command: psql -c "grant all on all sequences in schema {{ helix_database_username }} to {{ helix_database_username }}"
   become: true
   become_user: postgres
 
-- command: psql -c "alter role helix createdb"
+- command: psql -c "alter role {{ helix_database_username }} createdb"
   become: true
   become_user: postgres

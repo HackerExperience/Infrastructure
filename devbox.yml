@@ -8,4 +8,5 @@
     - {role: elixir, tags: elixir}
     - {role: helix, tags: helix}
     - {role: postgresql, tags: postgresql}
-    # - {role: pf, tags: pf}
+    - {role: database_helix, tags: database_helix}
+    - {role: pf, tags: pf}

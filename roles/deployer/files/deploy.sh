@@ -9,6 +9,8 @@ DEPLOY_SOFTWARE=""
 DEPLOY_ENV=""
 DEPLOY_BRANCH="master"
 DEPLOY_VERSION=""
+SERVER_ID=""
+LIMIT="all"
 
 function get_deploy_software() {
     case "$1" in
@@ -58,14 +60,25 @@ while [[ $# -gt 1 ]]; do
             DEPLOY_VERSION="$2"
             shift
             ;;
+        --server-id)
+            SERVER_ID="$2"
+            shift
+            ;;
         *)
             ;;
     esac
-    shift # past argument or value
+    shift
 done
 
 if [ -z "$DEPLOY_VERSION" ]; then
     exit "You did not specify which version to deploy, you fool!"
+fi
+
+if [ "$DEPLOY_ENV" == 'development' ]; then
+    if [ -z "$SERVER_ID" ]; then
+        exit 'You did not specify which server id to deploy to'
+    fi
+    LIMIT="interactive-$SERVER_ID"
 fi
 
 # tmp, until ansible 2.3 gets released
@@ -74,10 +87,10 @@ source /usr/local/ansible/hacking/env-setup
 # Make ansible use this config file, not the one on the repository
 export ANSIBLE_CONFIG=/home/deployer/.ansible.cfg
 
-
 cd $DEPLOYER_INFRASTRUCTURE_PATH
 
 ansible-playbook \
     "$DEPLOY_SOFTWARE".yml \
     -i environments/"$DEPLOY_ENV" \
-    --extra-vars "deploy=1 branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION"
+    --extra-vars "deploy=1 branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION" \
+    --limit "$LIMIT"

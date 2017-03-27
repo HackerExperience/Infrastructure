@@ -12,6 +12,14 @@
   when:
     - "'production' in inventory_dir and branch != 'master'"
 
+- set_fact:
+    helix_folder: "helix"
+
+- set_fact:
+    helix_folder: "helix-interactive"
+  when:
+    - "'development' in inventory_dir"
+
 - name: Clean up any previous build
   file:
     path: "{{ helix_path }}"
@@ -40,7 +48,7 @@
     aws_access_key: "{{ private_aws_s3_release_access_key }}"
     aws_secret_key: "{{ private_aws_s3_release_secret_key }}"
     bucket: he2-releases
-    object: "/helix/{{ branch }}/{{ version }}.tar.gz"
+    object: "/{{ helix_folder }}/{{ branch }}/{{ version }}.tar.gz"
     dest: "{{ helix_path }}/helix.tar.gz"
     mode: get
   become: true

@@ -3,14 +3,9 @@
     that:
       - "{{ item }} is defined"
   with_items:
-    - provision
     - jail_name
     - jail_ip
     - jail_args
-
-- assert:
-    that:
-      - provision == "1"
 
 - assert:
     that:
