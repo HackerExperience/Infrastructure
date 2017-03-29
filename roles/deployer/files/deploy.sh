@@ -11,6 +11,7 @@ DEPLOY_BRANCH="master"
 DEPLOY_VERSION=""
 SERVER_ID=""
 LIMIT="all"
+WIKI_NAME=""
 
 function get_deploy_software() {
     case "$1" in
@@ -18,6 +19,9 @@ function get_deploy_software() {
             DEPLOY_SOFTWARE="$1"
             ;;
         hewww)
+            DEPLOY_SOFTWARE="$1"
+            ;;
+        wiki)
             DEPLOY_SOFTWARE="$1"
             ;;
         *)
@@ -64,12 +68,16 @@ while [[ $# -gt 1 ]]; do
             SERVER_ID="$2"
             shift
             ;;
+        --wiki-name)
+            WIKI_NAME="$2"
+            shift
         *)
             ;;
     esac
     shift
 done
 
+# Extra checks
 if [ -z "$DEPLOY_VERSION" ]; then
     exit "You did not specify which version to deploy, you fool!"
 fi
@@ -80,6 +88,18 @@ if [ "$DEPLOY_ENV" == 'development' ]; then
     fi
     LIMIT="interactive-$SERVER_ID"
 fi
+
+# Find out custom extra_vars
+case "$DEPLOY_SOFTWARE" in
+    helix)
+        CUSTOM_EXTRA_VARS=" branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION "
+        ;;
+    wiki)
+        CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME "
+        ;;
+    *
+        ;;
+esac
 
 # tmp, until ansible 2.3 gets released
 source /usr/local/ansible/hacking/env-setup
@@ -92,5 +112,5 @@ cd $DEPLOYER_INFRASTRUCTURE_PATH
 ansible-playbook \
     "$DEPLOY_SOFTWARE".yml \
     -i environments/"$DEPLOY_ENV" \
-    --extra-vars "deploy=1 branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION" \
+    --extra-vars "deploy=1 $CUSTOM_EXTRA_VARS" \
     --limit "$LIMIT"

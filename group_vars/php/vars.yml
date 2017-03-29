@@ -1,0 +1,32 @@
+php_user: www
+php_group: www
+php_conf_path: /usr/local/etc
+
+php_rcconf: |
+  php_fpm_enable="YES"
+
+fpm_events: kqueue
+fpm_max_process: 256
+fpm_rlimit_files: 16384
+
+fpm_pm_type: dynamic
+fpm_pm_max_children: 64
+fpm_pm_start: 32
+fpm_pm_min_spare: 8
+fpm_pm_max_spare: 32
+fpm_pm_max_requests: 0
+
+ini_opcache_enable: 1
+ini_opcache_memory_consumption: 4096
+fpm_listen: /var/run/php-fpm.sock
+fpm_listen_owner: "{{ php_user }}"
+fpm_listen_group: "{{ php_group }}"
+
+ini_opcache_interned_strings: 64
+ini_opcache_max_accelerated_files: 10123
+ini_opcache_validate_timestamps: 1
+ini_opcache_save_comments: 0
+
+ini_output_buffering: 'Off'
+ini_memory_limit: '128M'
+ini_max_input_vars: 1000

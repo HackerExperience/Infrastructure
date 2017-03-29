@@ -1,0 +1,9 @@
+- pkgng:
+    name: git
+  become: true
+
+- include_role:
+    name: wiki
+    tasks_from: deploy
+  when: deploy is defined
+  tags: wiki

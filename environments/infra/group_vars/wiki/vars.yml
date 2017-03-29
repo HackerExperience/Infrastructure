@@ -1,0 +1,12 @@
+nginx_sites_enabled:
+  - gd.hackerexperience.com
+
+ini_output_buffering: 'Off'
+ini_memory_limit: '32M'
+ini_max_input_vars: 10000
+
+wiki_name: "gd" # makes it easier to add a new wiki in the future
+wiki_path: "{{ nginx_data_path }}/{{ wiki_name }}"
+wiki_content_path: "{{ wiki_path }}/data/pages"
+
+wiki_user: "{{ php_user }}"
