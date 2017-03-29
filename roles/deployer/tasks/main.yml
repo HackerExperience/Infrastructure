@@ -83,10 +83,9 @@
 
 - name: Clone Infra playbooks
   git:
-    repo: https://github.com/renatomassaro/infrastructure.git
+    repo: https://github.com/hackerexperience/infrastructure.git
     dest: /usr/local/infrastructure
     force: true
-    version: wiki
   become: true
 
 - name: Infra path file permissions

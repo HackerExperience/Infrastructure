@@ -95,7 +95,7 @@ case "$DEPLOY_SOFTWARE" in
         ;;
     wiki)
         DEPLOY_ENV="infra"
-        CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME "
+        CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME branch=$DEPLOY_BRANCH"
         ;;
     *)
         ;;

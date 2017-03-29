@@ -3,12 +3,14 @@
       - deploy is defined
       - deploy == "1"
       - wiki_name is defined
+      - branch is defined
 
 - name: Clone repository to temporary dir
   git:
     repo: "https://github.com/hackerexperience/gamedesign"
     dest: /tmp/wiki_content/
     force: yes
+    version: "{{ branch }}"
   become: true
   become_user: "{{ wiki_user }}"
 
