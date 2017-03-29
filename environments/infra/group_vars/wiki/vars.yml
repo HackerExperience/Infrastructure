@@ -10,3 +10,5 @@ wiki_path: "{{ nginx_data_path }}/{{ wiki_name }}"
 wiki_content_path: "{{ wiki_path }}/data/pages"
 
 wiki_user: "{{ php_user }}"
+deployer_user: "deployer"
+wiki_ssh_users: "{{ deployer_user }}"

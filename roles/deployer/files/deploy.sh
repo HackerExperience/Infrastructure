@@ -77,11 +77,6 @@ while [[ $# -gt 1 ]]; do
     shift
 done
 
-# Extra checks
-if [ -z "$DEPLOY_VERSION" ]; then
-    exit "You did not specify which version to deploy, you fool!"
-fi
-
 if [ "$DEPLOY_ENV" == 'development' ]; then
     if [ -z "$SERVER_ID" ]; then
         exit 'You did not specify which server id to deploy to'
@@ -92,12 +87,17 @@ fi
 # Find out custom extra_vars
 case "$DEPLOY_SOFTWARE" in
     helix)
+        if [ -z "$DEPLOY_VERSION" ]; then
+            echo "You did not specify which version to deploy, you fool!"
+            exit 1
+        fi
         CUSTOM_EXTRA_VARS=" branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION "
         ;;
     wiki)
+        DEPLOY_ENV="infra"
         CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME "
         ;;
-    *
+    *)
         ;;
 esac
 

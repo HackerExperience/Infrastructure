@@ -2,6 +2,25 @@
     name: git
   become: true
 
+- name: Add deployer user
+  user:
+    name: "{{ deployer_user }}"
+  become: true
+
+- name: Copy deployer public key
+  authorized_key:
+    user: "{{ deployer_user }}"
+    state: present
+    key: "{{ lookup('file', '../../deployer/files/deployer_production.pub') }}"
+  become: true
+  become_user: "{{ deployer_user }}"
+
+- name: Create temporary wiki dir
+  file:
+    path: /tmp/wiki_content
+    state: directory
+  become: true
+
 - include_role:
     name: wiki
     tasks_from: deploy

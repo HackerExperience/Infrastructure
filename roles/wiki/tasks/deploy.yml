@@ -14,7 +14,7 @@
   become_user: "{{ wiki_user }}"
 
 - name: Replace content
-  command: "rm -rf {{ wiki_content_path }}/* && cp -r /tmp/wiki_content/* {{ wiki_content_path }}/"
+  shell: "rm -rf {{ wiki_content_path }} && mkdir -p {{ wiki_content_path }} &&  mv /tmp/wiki_content/* {{ wiki_content_path }}/"
   register: _result
   become: true
   become_user: "{{ wiki_user }}"
