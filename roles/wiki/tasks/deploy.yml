@@ -8,7 +8,6 @@
   git:
     repo: "https://github.com/hackerexperience/gamedesign"
     dest: /tmp/wiki_content/
-    #dest: "{{ wiki_content_path }}"
     force: yes
   become: true
   become_user: "{{ wiki_user }}"

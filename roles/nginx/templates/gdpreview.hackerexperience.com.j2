@@ -1,12 +1,12 @@
 server {
     listen               80;
-    server_name          gd.hackerexperience.com;
+    server_name          gdpreview.hackerexperience.com;
 
     # Maximum file upload size is 4MB - change accordingly if needed
     client_max_body_size 4M;
     client_body_buffer_size 128k;
 
-    root {{ nginx_data_path }}/gd;
+    root {{ nginx_data_path }}/gdpreview;
     index doku.php;
 
     access_log /var/log/nginx/wikigd.access.log combined buffer=10m flush=5m;
