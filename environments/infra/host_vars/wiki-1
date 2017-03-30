@@ -1,0 +1,17 @@
+fpm_events: 'kqueue'
+fpm_max_process: 128
+fpm_rlimit_files: 4096
+
+fpm_pm_type: dynamic
+fpm_pm_max_children: 64
+fpm_pm_start: 32
+fpm_pm_min_spare: 8
+fpm_pm_max_spare: 32
+fpm_pm_max_requests: 0
+
+ini_opcache_enable: 1
+ini_opcache_memory_consumption: 4096
+ini_opcache_interned_strings: 64
+ini_opcache_max_accelerated_files: 10123
+ini_opcache_validate_timestamps: 1
+ini_opcache_save_comments: 0

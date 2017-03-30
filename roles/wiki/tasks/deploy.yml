@@ -1,0 +1,24 @@
+- assert:
+    that:
+      - deploy is defined
+      - deploy == "1"
+      - wiki_name is defined
+      - branch is defined
+
+- name: Clone repository to temporary dir
+  git:
+    repo: "https://github.com/hackerexperience/gamedesign"
+    dest: /tmp/wiki_content/
+    force: yes
+    version: "{{ branch }}"
+  become: true
+  become_user: "{{ wiki_user }}"
+
+- name: Replace content
+  shell: "rm -rf {{ wiki_content_path }} && mkdir -p {{ wiki_content_path }} &&  mv /tmp/wiki_content/* {{ wiki_content_path }}/"
+  register: _result
+  become: true
+  become_user: "{{ wiki_user }}"
+
+- debug:
+    msg: "{{ _result }}"

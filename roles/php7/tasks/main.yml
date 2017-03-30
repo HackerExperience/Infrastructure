@@ -1,0 +1,54 @@
+- name: Install php7
+  pkgng:
+    name: php70
+  become: true
+
+- name: Install extensions
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - php70-session
+    - php70-xml
+    - php70-openssl
+    - php70-zlib
+  become: true
+
+- name: Ensure php-fpm user is there
+  user:
+    name: "{{ php_user }}"
+    group: "{{ php_group }}"
+  become: true
+
+- name: Configure php(-fpm)
+  template:
+    src: php-fpm.conf.j2
+    dest: "{{ php_conf_path }}/php-fpm.conf"
+    owner: "{{ php_user }}"
+    group: "{{ php_group }}"
+    mode: 0644
+  notify: reload php
+  become: true
+
+- template:
+    src: www.conf.j2
+    dest: "{{ php_conf_path }}/php-fpm.d/www.conf"
+    owner: "{{ php_user }}"
+    group: "{{ php_group }}"
+    mode: 0644
+  notify: reload php
+  become: true
+
+- template:
+    src: php.ini.j2
+    dest: "{{ php_conf_path }}/php.ini"
+    owner: "{{ php_user }}"
+    group: "{{ php_group }}"
+    mode: 0644
+  notify: reload php
+  become: true
+
+- name: Run php7
+  service:
+    name: php-fpm
+    state: started
+  become: true

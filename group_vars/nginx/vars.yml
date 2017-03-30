@@ -4,6 +4,7 @@ nginx_rcconf: |
 nginx_user: www
 nginx_group: www
 nginx_conf_path: /usr/local/etc/nginx
+nginx_data_path: /usr/local/www
 
 nginx_log_path: /var/log/nginx
 
@@ -84,3 +85,11 @@ conf_include: |
 conf_default_type: text/html
 
 conf_charset: UTF-8
+
+conf_php: |
+    location ~ \.php$ {
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param REDIRECT_STATUS 200;
+        fastcgi_pass unix:{{ fpm_listen }};
+        include fastcgi_params;
+    }

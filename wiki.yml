@@ -1,0 +1,9 @@
+- name: Setup Wiki
+  hosts: wiki
+
+  roles:
+    - {role: common, tags: common}
+    - {role: php7, tags: php7}
+    - {role: nginx, tags: nginx}
+    - {role: wiki, tags: wiki}
+    # - {role: pf, tags: pf}

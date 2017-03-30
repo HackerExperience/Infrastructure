@@ -6,4 +6,5 @@
     - {role: java, tags: java}
     - {role: jenkins_slave, tags: jenkins_slave}
     - {role: elixir, tags: elixir}
+    - {role: ciagent_elixir, tags: ciagent_elixir}
     # - {role: pf, tags: pf}

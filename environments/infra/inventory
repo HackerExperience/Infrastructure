@@ -3,6 +3,7 @@ bastion-1 ansible_host=192.168.1.10
 bastion-2 ansible_host=192.168.1.11
 nginx-infra-1 ansible_host=192.168.10.10
 chatops-1 ansible_host=192.168.15.10
+wiki-1 ansible_host=192.168.70.10
 
 [bastion]
 bastion-1
@@ -11,11 +12,11 @@ bastion-2
 [nginx-infra]
 nginx-infra-1
 
-[nginx:children]
-nginx-infra
-
 [chatops]
 chatops-1
+
+[wiki]
+wiki-1
 
 # common
 
@@ -25,10 +26,19 @@ chatops-1
 bastion
 nginx-infra
 chatops
+wiki
+
+[nginx:children]
+nginx-infra
+wiki
 
 [freebsd:children]
 bastion
 nginx-infra
+wiki
 
 [debian:children]
 chatops
+
+[php:children]
+wiki

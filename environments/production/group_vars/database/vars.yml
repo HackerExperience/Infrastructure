@@ -1,5 +1,5 @@
 # Temp, while we are at simple cloud server
-pg_max_connections: 500
+pg_max_connections: 200
 pg_shared_buffers: '128MB'
 pg_fsync: 'on'
 pg_full_page_writes: 'on'

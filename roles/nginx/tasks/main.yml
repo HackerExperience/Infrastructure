@@ -19,24 +19,7 @@
   with_items:
     - access.log
     - error.log
-    - access_jenkins.log
-    - error_jenkins.log
   become: true
-
-- name: Ensure nginx directory is there
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ nginx_user }}"
-    group: "{{ nginx_group }}"
-  with_items:
-    - "{{ nginx_conf_path }}"
-    - "{{ nginx_conf_path }}/sites-enabled"
-  become: true
-
-- include_role:
-    name: nginx
-    tasks_from: servers
 
 - include_role:
     name: utils
@@ -53,6 +36,21 @@
     from_role: nginx
     file_name: nginx.conf.j2
   when: _proceed_nginx_nginxconfj2
+
+- name: Ensure nginx directory is there
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+  with_items:
+    - "{{ nginx_conf_path }}"
+    - "{{ nginx_conf_path }}/sites-enabled"
+  become: true
+
+- include_role:
+    name: nginx
+    tasks_from: servers
 
 - name: Track nginx.conf for changes
   include_role:
