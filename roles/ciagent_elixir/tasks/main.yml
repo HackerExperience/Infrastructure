@@ -1,0 +1,7 @@
+- name: Create helf dir
+  file:
+    name: "{{ jenkins_home }}/.mix/helf"
+    state: directory
+    recurse: yes
+  become: true
+  become_user: "{{ jenkins_user }}"

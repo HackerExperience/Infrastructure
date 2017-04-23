@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+# Shared entries
+{{ all_bootloader }}
+
+{%- for group in group_names %} 
+  {%- set group_entries = group + '_bootloader' -%}
+  # Entries for ansible group {{ group }}
+  {{ hostvars[inventory_hostname][group_entries] | default ("") }}
+{%- endfor -%}
+
