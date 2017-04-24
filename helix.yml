@@ -3,6 +3,8 @@
 
   environment: "{{ helix_environment }}"
 
+  # TODO: Helix does not need elixir.
+
   roles:
     - {role: common, tags: common}
     - {role: elixir, tags: elixir}
