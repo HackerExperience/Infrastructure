@@ -1,5 +1,6 @@
 [all]
 helix-1 ansible_host=192.168.101.10
+heborn-1 ansible_host=192.168.180.10
 
 [helix]
 helix-1
@@ -10,6 +11,9 @@ helix-1
 [blue]
 helix-1
 
+[heborn]
+heborn-1
+
 # --- common ---
 
 [metal:children]
@@ -17,6 +21,7 @@ helix-1
 [cloud:children]
 helix
 database
+heborn
 
 [postgresql:children]
 database
@@ -25,3 +30,4 @@ database
 [freebsd:children]
 helix
 database
+heborn
