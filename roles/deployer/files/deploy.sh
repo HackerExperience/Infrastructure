@@ -71,6 +71,7 @@ while [[ $# -gt 1 ]]; do
         --wiki-name)
             WIKI_NAME="$2"
             shift
+            ;;
         *)
             ;;
     esac
