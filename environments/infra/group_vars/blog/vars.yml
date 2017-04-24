@@ -1,0 +1,7 @@
+nginx_sites_enabled:
+  - engineering.hackerexperience.com
+
+blog_user: "blog"
+blog_group: "{{ nginx_group }}"
+
+blog_path: "{{ nginx_data_path }}/{{ blog_name }}"
