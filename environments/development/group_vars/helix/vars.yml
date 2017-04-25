@@ -5,6 +5,8 @@ helix_database_pool_size: 3
 helix_database_prefix: interactive
 
 helix_environment:
+  HELIX_NODE_NAME: "{{ inventory_hostname }}"
+  HELIX_CLUSTER_COOKIE: "{{ private_helix_cluster_cookie }}"
   HELIX_ENDPOINT_SECRET_KEY: "{{ private_helix_endpoint_secret_key }}"
   HELIX_ENDPOINT_URL: "{{ helix_endpoint_url }}"
   HELIX_DB_PREFIX: "{{ helix_database_prefix }}"
