@@ -26,6 +26,9 @@ heborn
 [postgresql:children]
 database
 
+[nginx:children]
+heborn
+
 # Hosts running FreeBSD OS
 [freebsd:children]
 helix

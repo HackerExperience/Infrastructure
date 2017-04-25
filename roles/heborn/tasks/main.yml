@@ -1,0 +1,25 @@
+- name: Add deployer user
+  user:
+    name: "{{ deployer_user }}"
+  become: true
+
+- name: Add heborn user
+  user:
+    name: "{{ heborn_user }}"
+  become: true
+
+- name: Copy deployer public key
+  authorized_key:
+    user: "{{ deployer_user }}"
+    state: present
+    key: "{{ lookup('file', '../../deployer/files/deployer_production.pub') }}"
+  become: true
+  become_user: "{{ deployer_user }}"
+
+- include_role:
+    name: heborn
+    tasks_from: deploy
+  when:
+    - deploy is defined
+  tags:
+    - deploy

@@ -8,6 +8,7 @@ build-elixir-4 ansible_host=192.168.21.13
 build-helix-1 ansible_host=192.168.22.10
 build-helix-2 ansible_host=192.168.22.11
 build-database-1 ansible_host=192.168.23.10
+build-elm-1 ansible_host=192.168.24.10
 deployer-1 ansible_host=192.168.99.99
 
 [ci:children]
@@ -20,6 +21,7 @@ jenkins-1
 [ciagent:children]
 ciagent_elixir
 ciagent_helix
+ciagent_elm
 
 [ciagent_elixir]
 build-elixir-1
@@ -30,6 +32,9 @@ build-elixir-4
 [ciagent_helix]
 build-helix-1
 build-helix-2
+
+[ciagent_elm]
+build-elm-1
 
 [build-database]
 build-database-1

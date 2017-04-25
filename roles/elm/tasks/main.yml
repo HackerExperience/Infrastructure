@@ -1,0 +1,86 @@
+- name: Setup elm user & group
+  group:
+    name: "{{ elm_group }}"
+  become: true
+
+- user:
+    name: "{{ elm_user }}"
+    group: "{{ elm_group }}"
+  become: true
+
+- name: Install haskell & co
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - ghc
+    - hs-cabal-install
+    - stack
+  become: true
+
+- name: Get installation state
+  set_fact:
+    elm_installed: false
+
+- stat:
+    path: "{{ elm_path }}/.built"
+  register: cache
+
+- set_fact:
+    elm_installed: true
+  when:
+    - cache.stat.exists
+
+- name: Prepare installation path
+  file:
+    name: "{{ elm_path }}"
+    state: directory
+    owner: "{{ elm_user }}"
+    group: "{{ elm_group }}"
+  become: true
+
+- file:
+    name: "{{ elm_path }}/build/"
+    state: directory
+  become: true
+  become_user: "{{ elm_user }}"
+
+- name: Download installer
+  get_url:
+    url: https://raw.githubusercontent.com/elm-lang/elm-platform/master/installers/BuildFromSource.hs
+    dest: "{{ elm_path }}/build/BuildFromSource.hs"
+  when: not elm_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+- name: Install! (takes a while)
+  command: runhaskell BuildFromSource.hs 0.18
+  args:
+    chdir: "{{ elm_path }}/build"
+  register: _result
+  when: not elm_installed
+  become: true
+
+- name: Symlink binaries
+  file:
+    src: "{{ elm_path}}/build/Elm-Platform/0.18/.cabal-sandbox/bin/{{ item }}"
+    dest: /usr/local/bin/{{ item }}
+    state: link
+    owner: "{{ elm_user }}"
+    group: "{{ elm_group }}"
+  with_items:
+    - elm
+    - elm-make
+    - elm-package
+    - elm-repl
+  when: not elm_installed
+  become: true
+
+- name: Persist our installation state
+  command: touch .built
+  args:
+    chdir: "{{ elm_path }}"
+  when: not elm_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+

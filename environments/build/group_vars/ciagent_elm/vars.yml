@@ -1,0 +1,3 @@
+elm_user: "{{ jenkins_user }}"
+elm_group: "{{ jenkins_group }}"
+elm_path: "/usr/local/elm"

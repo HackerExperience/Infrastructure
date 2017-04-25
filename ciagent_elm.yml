@@ -1,0 +1,10 @@
+- name: Setup ciagent for elm
+  hosts: ciagent_elm
+
+  roles:
+    - {role: common, tags: common}
+    - {role: java, tags: java}
+    - {role: jenkins_slave, tags: jenkins_slave}
+    - {role: elm, tags: elm}
+    - {role: ciagent_elm, tags: ciagent_elm}
+    # - {role: pf, tags: pf}

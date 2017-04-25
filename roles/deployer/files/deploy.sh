@@ -21,6 +21,9 @@ function get_deploy_software() {
         hewww)
             DEPLOY_SOFTWARE="$1"
             ;;
+        heborn)
+            DEPLOY_SOFTWARE="$1"
+            ;;
         wiki)
             DEPLOY_SOFTWARE="$1"
             ;;
@@ -88,6 +91,13 @@ fi
 # Find out custom extra_vars
 case "$DEPLOY_SOFTWARE" in
     helix)
+        if [ -z "$DEPLOY_VERSION" ]; then
+            echo "You did not specify which version to deploy, you fool!"
+            exit 1
+        fi
+        CUSTOM_EXTRA_VARS=" branch=$DEPLOY_BRANCH version=$DEPLOY_VERSION "
+        ;;
+    heborn)
         if [ -z "$DEPLOY_VERSION" ]; then
             echo "You did not specify which version to deploy, you fool!"
             exit 1
