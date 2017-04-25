@@ -31,7 +31,7 @@
   become: true
   become_user: "{{ jenkins_user }}"
 
-- name: Upload Deployer's private key
+- name: Upload Deployer private key
   copy:
     src: "~/.ssh/deployer"
     dest: "{{ jenkins_home }}/.ssh/deployer"

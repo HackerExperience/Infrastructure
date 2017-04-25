@@ -1,0 +1,9 @@
+nginx_sites_enabled:
+  - 1.hackerexperience.com
+
+heborn_user: "{{ nginx_user }}"
+heborn_group: "{{ nginx_group }}"
+heborn_path: "{{ nginx_data_path }}/heborn"
+
+deployer_user: "deployer"
+heborn_ssh_users: "{{ deployer_user }}"

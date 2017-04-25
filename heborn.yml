@@ -1,0 +1,8 @@
+- name: Setup HEBorn
+  hosts: heborn
+
+  roles:
+    - {role: common, tags: common}
+    - {role: nginx, tags: nginx}
+    - {role: heborn, tags: heborn}
+    # - {role: pf, tags: pf}

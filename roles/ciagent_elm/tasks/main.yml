@@ -1,0 +1,74 @@
+- name: Install nfuckingpm
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - npm
+  become: true
+
+- name: Get elm-format install state
+  set_fact:
+    elmformat_installed: false
+
+- stat:
+    path: "{{ elm_path }}/elm-format/.built"
+  register: cache
+
+- set_fact:
+    elmformat_installed: true
+  when:
+    - cache.stat.exists
+
+
+- name: Install elm-format
+  git:
+    repo: https://github.com/avh4/elm-format.git
+    dest: "{{ elm_path }}/elm-format/"
+  when: not elmformat_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+- command: "{{ item }}"
+  args:
+    chdir: "{{ elm_path }}/elm-format"
+  with_items:
+    - stack setup
+    - stack build
+    - stack install
+  when: not elmformat_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+- name: Symlink the elm-format bin
+  file:
+    src: "/home/{{ elm_user }}/.local/bin/elm-format-0.18"
+    dest: /usr/local/bin/elm-format
+    owner: "{{ elm_user }}"
+    group: "{{ elm_group }}"
+  when: not elmformat_installed
+  become: true
+
+- name: Persist elm-format installation state
+  command: touch .built
+  args:
+    chdir: "{{ elm_path }}/elm-format"
+  when: not elmformat_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+# Elm-webpack-loader requires some extra effort because it includes `elm` as an
+# npm requirement, which can not be satisfied on FreeBSD. Therefore, we have to
+# build it manually with some trickery.
+- name: Install elm-webpack-loader
+  git:
+    repo: https://github.com/elm-community/elm-webpack-loader.git
+    dest: "{{ elm_path }}/elm-webpack-loader/"
+  become: true
+  become_user: "{{ elm_user }}"
+
+- lineinfile:
+    path: "{{ elm_path }}/elm-webpack-loader/package.json"
+    regexp: "\"elm\":"
+    state: absent
+  become: true
+  become_user: "{{ elm_user }}"
+
