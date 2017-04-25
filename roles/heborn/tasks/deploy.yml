@@ -1,0 +1,67 @@
+- name: Ensure required stuff is here
+  assert:
+    that:
+      - "{{ item }} is defined"
+  with_items:
+    - branch
+    - version
+
+# Sanity checks
+- fail:
+    msg: "Can't deploy {{ branch }} to production environment, only master is OK"
+  when:
+    - "'production' in inventory_dir and branch != 'master'"
+
+- name: Ensure correct permissions on heborn folder
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ heborn_user }}"
+    group: "{{ heborn_group }}"
+  with_items:
+    - "{{ heborn_path }}"
+  become: true
+
+- name: Download release
+  s3:
+    aws_access_key: "{{ private_aws_s3_release_access_key }}"
+    aws_secret_key: "{{ private_aws_s3_release_secret_key }}"
+    bucket: he2-releases
+    object: "/heborn/{{ branch }}/{{ version }}.tar.gz"
+    dest: "{{ heborn_path }}/heborn.tar.gz"
+    mode: get
+  become: true
+  become_user: "{{ heborn_user }}"
+
+# Will extract to $ROOT/build, so it's not released yet
+- name: Extract release
+  shell: tar xf heborn.tar.gz
+  args:
+    chdir: "{{ heborn_path }}"
+  become: true
+  become_user: "{{ heborn_user }}"
+
+# Touches everything to change timestamp to current time
+- command: find . -exec touch {} +
+  args:
+    chdir: "{{ heborn_path }}/build"
+  become: true
+  become_user: "{{ heborn_user }}"
+
+- name: Release
+  shell: cp -rp build/* .
+  args:
+    chdir: "{{ heborn_path }}"
+  become: true
+  become_user: "{{ heborn_user }}"
+
+- name: Cleanup
+  command: "{{ item }}"
+  args:
+    chdir: "{{ heborn_path }}"
+  with_items:
+    - rm -rf build/
+    - rm -f heborn.tar.gz
+    - find . -mmin +30 -delete  # Deletes everything older than 30 min
+  become: true
+  become_user: "{{ heborn_user }}"

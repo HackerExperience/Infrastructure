@@ -16,6 +16,13 @@
   become: true
   become_user: "{{ deployer_user }}"
 
+- name: Install required stuff
+  pkgng:
+    name: "{{ item }}"
+  with_items:
+    - py27-boto
+  become: true
+
 - include_role:
     name: heborn
     tasks_from: deploy
