@@ -43,6 +43,24 @@
     - "{{ helix_path }}/src"
   become: true
 
+- name: Create priv folder on helix path
+  file:
+    path: "{{ helix_priv_path }}"
+    state: directory
+  become: true
+  become_user: "{{ helix_user }}"
+
+- name: Copy SSL certificate and keys
+  copy:
+    src: "{{ playbook_dir }}/files/letsencrypt/live/{{ helix_endpoint_url }}/{{ item.name }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { dest: "{{ ssl_keyfile_path }}", name: "privkey.pem", mode: "0600" }
+    - { dest: "{{ ssl_certfile_path }}", name: "cert.pem", mode: "0644" }
+  become: true
+  become_user: "{{ helix_user }}"
+
 - name: Download release
   s3:
     aws_access_key: "{{ private_aws_s3_release_access_key }}"

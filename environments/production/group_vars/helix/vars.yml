@@ -4,8 +4,15 @@ helix_database_host: "{{ hostvars[groups['database'][0]]['ansible_host'] }}"
 helix_database_pool_size: 10
 helix_database_prefix: helix
 helix_endpoint_url: "api.hackerexperience.com"
+helix_priv_path: "{{ helix_path }}/priv"
+ssl_keyfile_path: "{{ helix_priv_path }}/privkey.pem"
+ssl_certfile_path: "{{ helix_priv_path }}/cert.pem"
 
 helix_environment: 
+  HELIX_NODE_NAME: "{{ inventory_hostname }}"
+  HELIX_CLUSTER_COOKIE: "{{ private_helix_cluster_cookie }}"
+  HELIX_SSL_KEYFILE: "{{ ssl_keyfile_path }}"
+  HELIX_SSL_CERTFILE: "{{ ssl_certfile_path }}"
   HELIX_ENDPOINT_SECRET_KEY: "{{ private_helix_endpoint_secret_key }}"
   HELIX_ENDPOINT_URL: "{{ helix_endpoint_url }}"
   HELIX_DB_PREFIX: "{{ helix_database_prefix }}"
