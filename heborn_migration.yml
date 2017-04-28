@@ -1,0 +1,11 @@
+- name: Setup HEBorn migration
+  hosts: heborn_migration
+  
+  environment: "{{ migration_environment }}"
+  
+  roles:
+    - {role: common, tags: common}
+    - {role: nginx, tags: nginx}
+    - {role: elixir, tags: elixir}
+    - {role: heborn_migration, tags: heborn_migration}
+    # - {role: pf, tags: pf}

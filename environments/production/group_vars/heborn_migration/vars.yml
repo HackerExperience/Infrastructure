@@ -1,0 +1,31 @@
+nginx_sites_enabled:
+  - migrate.hackerexperience.com
+
+migration_user: "{{ nginx_user }}"
+migration_group: "{{ nginx_group }}"
+migration_path: "{{ nginx_data_path }}/migration"
+
+elixir_user: "{{ migration_user }}"
+elixir_group: "{{ migration_group }}"
+
+deployer_user: "deployer"
+heborn_ssh_users: "{{ deployer_user }}"
+
+smtp_login: postmaster@mailgun.hackerexperience.com
+smtp_password: "{{ private_smtp_password }}"
+smtp_host: smtp.mailgun.org
+
+database_username: helix
+database_password: "{{ private_database_password }}"
+database_host: "{{ hostvars[groups['database'][0]]['ansible_host'] }}"
+
+migration_environment:
+  HEBORN_MIGRATION_SMTP_LOGIN: "{{ smtp_login }}"
+  HEBORN_MIGRATION_SMTP_PASSWORD: "{{ smtp_password }}"
+  HEBORN_MIGRATION_SMTP_HOST: "{{ smtp_host }}"
+  HEBORN_MIGRATION_SECRET_KEY_BASE: "{{ private_secret_key_base }}"
+  HEBORN_MIGRATION_CLAIM_SECRET: "{{ private_claim_secret }}"
+  HEBORN_MIGRATION_DB_USERNAME: "{{ database_username }}"
+  HEBORN_MIGRATION_DB_PASSWORD: "{{ database_password }}"
+  HEBORN_MIGRATION_DB_HOST: "{{ database_host }}"
+  MIX_ENV: prod

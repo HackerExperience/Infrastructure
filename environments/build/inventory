@@ -9,6 +9,8 @@ build-helix-1 ansible_host=192.168.22.10
 build-helix-2 ansible_host=192.168.22.11
 build-database-1 ansible_host=192.168.23.10
 build-elm-1 ansible_host=192.168.24.10
+build-elm-2 ansible_host=192.168.24.11
+build-elm-3 ansible_host=192.168.24.12
 deployer-1 ansible_host=192.168.99.99
 
 [ci:children]
@@ -35,6 +37,8 @@ build-helix-2
 
 [ciagent_elm]
 build-elm-1
+build-elm-2
+build-elm-3
 
 [build-database]
 build-database-1

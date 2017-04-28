@@ -8,15 +8,25 @@
 - name: Get elm-format install state
   set_fact:
     elmformat_installed: false
+    elmwebpack_installed: false
 
 - stat:
     path: "{{ elm_path }}/elm-format/.built"
-  register: cache
+  register: cache_format
 
 - set_fact:
     elmformat_installed: true
   when:
-    - cache.stat.exists
+    - cache_format.stat.exists
+
+- stat:
+    path: "{{ elm_path }}/elm-webpack-loader/.built"
+  register: cache_webpack
+
+- set_fact:
+    elmwebpack_installed: true
+  when:
+    - cache_webpack.stat.exists
 
 
 - name: Install elm-format
@@ -62,6 +72,7 @@
   git:
     repo: https://github.com/elm-community/elm-webpack-loader.git
     dest: "{{ elm_path }}/elm-webpack-loader/"
+  when: not elmwebpack_installed
   become: true
   become_user: "{{ elm_user }}"
 
@@ -69,6 +80,22 @@
     path: "{{ elm_path }}/elm-webpack-loader/package.json"
     regexp: "\"elm\":"
     state: absent
+  when: not elmwebpack_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+- command: npm install
+  args:
+    chdir: "{{ elm_path }}/elm-webpack-loader"
+  when: not elmwebpack_installed
+  become: true
+  become_user: "{{ elm_user }}"
+
+- name: Persist elm-webpack-loader installation state
+  command: touch .built
+  args:
+    chdir: "{{ elm_path }}/elm-webpack-loader"
+  when: not elmwebpack_installed
   become: true
   become_user: "{{ elm_user }}"
 

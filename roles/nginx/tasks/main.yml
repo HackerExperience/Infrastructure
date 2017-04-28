@@ -46,6 +46,7 @@
   with_items:
     - "{{ nginx_conf_path }}"
     - "{{ nginx_conf_path }}/sites-enabled"
+    - "{{ nginx_data_path }}"
   become: true
 
 - include_role:

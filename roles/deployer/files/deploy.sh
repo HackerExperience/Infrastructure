@@ -24,6 +24,9 @@ function get_deploy_software() {
         heborn)
             DEPLOY_SOFTWARE="$1"
             ;;
+        heborn_migration)
+            DEPLOY_SOFTWARE="$1"
+            ;;
         wiki)
             DEPLOY_SOFTWARE="$1"
             ;;
