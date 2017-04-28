@@ -9,9 +9,3 @@ helix_path: "/usr/local/helix"
 
 deployer_user: "deployer"
 helix_ssh_users: "{{ deployer_user }}"
-
-helix_pf_nat:
-  - nat on $ext_if from $int_if:network to any -> ($ext_if)
-  # Below is temp but I'll keep it here for documnetation purposes.
-  # rdr is on the router node (HAProxy), not helix node
-  # - "rdr on $ext_if proto tcp from any to $ip_pub port 80 -> {{ ansible_host }} port 8080"

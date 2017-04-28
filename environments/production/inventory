@@ -1,4 +1,5 @@
 [all]
+haproxy-1 ansible_host=35.185.98.93
 helix-1 ansible_host=192.168.101.10
 migrate-1 ansible_host=192.168.179.10
 heborn-1 ansible_host=192.168.180.10
@@ -18,6 +19,9 @@ heborn-1
 [heborn_migration]
 migrate-1
 
+[haproxy]
+haproxy-1
+
 # --- common ---
 
 [metal:children]
@@ -27,6 +31,7 @@ helix
 database
 heborn
 heborn_migration
+haproxy
 
 [postgresql:children]
 database
@@ -41,3 +46,4 @@ helix
 database
 heborn
 heborn_migration
+haproxy

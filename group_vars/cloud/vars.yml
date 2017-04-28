@@ -7,10 +7,13 @@ cloud_google_rcconf: |
   sshd_enable="YES"
   panicmail_autosubmit="YES"
 
-cloud_rcconf: |
+cloud_ovh_rcconf: |
   ifconfig_vtnet0="DHCP"
 
-cloud_user: "{{ system_user }}"
+cloud_rcconf: "{{ cloud_ovh_rcconf if provider == 'ovh' else cloud_google_rcconf }}"
+
+cloud_user: "{{ system_user if provider == 'ovh' else 'renato'}}"
+cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else '~/.ssh/google_compute_engine' }}"
 external_network_interface: "vtnet0"
 internal_network_interface: "vtnet1"
 
