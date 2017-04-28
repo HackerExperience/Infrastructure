@@ -3,18 +3,18 @@
     name: "{{ deployer_user }}"
   become: true
 
-- name: Add heborn user
+- name: Add migration user
   user:
-    name: "{{ heborn_user }}"
+    name: "{{ migration_user }}"
   become: true
 
-- name: Ensure .ssh directory for heborn user
+- name: Ensure .ssh directory for migration user
   file:
-    path: "/home/{{ heborn_user }}/.ssh"
+    path: "/home/{{ migration_user }}/.ssh"
     state: directory
     recurse: true
-    owner: "{{ heborn_user }}"
-    group: "{{ heborn_group }}"
+    owner: "{{ migration_user }}"
+    group: "{{ migration_group }}"
   become: true
 
 - name: Copy deployer public key
@@ -25,15 +25,25 @@
   become: true
   become_user: "{{ deployer_user }}"
 
+- name: Create migration path
+  file:
+    path: "{{ migration_path }}"
+    state: directory
+    recurse: true
+    owner: "{{ migration_user }}"
+    group: "{{ migration_group }}"
+  become: true
+
 - name: Install required stuff
   pkgng:
     name: "{{ item }}"
   with_items:
-    - py27-boto
+    - npm
   become: true
 
+
 - include_role:
-    name: heborn
+    name: heborn_migration
     tasks_from: deploy
   when:
     - deploy is defined

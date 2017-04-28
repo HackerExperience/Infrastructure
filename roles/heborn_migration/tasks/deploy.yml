@@ -1,0 +1,39 @@
+- name: Clone migration repo
+  git:
+    repo: https://github.com/hackerexperience/hebornmigration.git
+    dest: "{{ migration_path }}"
+    force: true
+  become: true
+  become_user: "{{ migration_user }}"
+
+- name: Install stuff
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ migration_path }}"
+  with_items:
+    - MIX_ENV=prod mix deps.get
+    - MIX_ENV=prod mix compile
+    - MIX_ENV=prod mix ecto.create
+    - MIX_ENV=prod mix ecto.migrate
+  become: true
+  become_user: "{{ migration_user }}"
+
+- name: Generate assets
+  command: "{{ item }}"
+  args:
+    chdir: "{{ migration_path }}/assets"
+  with_items:
+    - npm install
+    - ./node_modules/.bin/brunch build
+  become: true
+  become_user: "{{ migration_user }}"
+
+- name: Release
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ migration_path }}"
+  with_items:
+    - (kill `cat ../pid` || true) && elixir --detached -e "File.write! '../pid', :os.getpid" -S mix phx.server > ../migration.log
+  become: true
+  become_user: "{{ migration_user }}"
+

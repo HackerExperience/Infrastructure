@@ -1,3 +1,7 @@
+- name: Update pkg
+  command: pkg update -f
+  become: true
+
 - name: Install some basic stuff
   pkgng:
     name: "{{ item }}"

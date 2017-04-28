@@ -1,0 +1,18 @@
+server {
+    listen               80;
+    server_name          engineering.hackerexperience.com;
+
+    root {{ nginx_data_path }}/engineering;
+    index index.html;
+
+    access_log /var/log/nginx/engineering.access.log combined buffer=10m flush=5m;
+    error_log /var/log/nginx/engineering.error.log warn;
+
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+
+    location ~ /\.git {
+      deny  all;
+    }
+}
