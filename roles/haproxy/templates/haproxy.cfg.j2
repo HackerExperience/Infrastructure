@@ -1,0 +1,61 @@
+global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        stats socket /var/run/haproxy/admin.sock mode 660 level admin
+        stats timeout 30s
+        user {{ haproxy_user }}
+        group {{ haproxy_group }}
+        daemon
+
+        # Default SSL material locations
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+
+        # Default ciphers to use on SSL-enabled listening sockets.
+        # For more information, see ciphers(1SSL).
+        ssl-default-bind-ciphers kEECDH+aRSA+AES:kRSA+AES:+AES256:RC4-SHA:!kEDH:!LOW:!EXP:!MD5:!aNULL:!eNULL
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        #errorfile 400 /etc/haproxy/errors/400.http
+        #errorfile 403 /etc/haproxy/errors/403.http
+        #errorfile 408 /etc/haproxy/errors/408.http
+        #errorfile 500 /etc/haproxy/errors/500.http
+        #errorfile 502 /etc/haproxy/errors/502.http
+        #errorfile 503 /etc/haproxy/errors/503.http
+        #errorfile 504 /etc/haproxy/errors/504.http
+
+frontend helix-frontend
+    # bind *:80 #}
+    bind *:443 ssl crt /etc/ssl/private/privkey.pem
+    mode http
+
+    option http-server-close
+    option forwardfor
+    reqadd X-Forwarded-Proto:\ https
+    reqadd X-Forwareded-Port:\ 443
+    rspadd Strict-Transport-Security:\ max-age=15768000
+    default_backend helix-backend
+
+
+backend helix-backend
+    mode http
+    balance roundrobin
+    # redirect scheme https code 301 if !{ ssl_fc } #}
+    # http-request set-header X-Forwarded-Port %[dst_port] #}
+    # http-request add-header X-Forwarded-Proto https if { ssl_fc } #}
+    server helix1 144.217.247.220:4000 ssl verify none
+
+listen stats
+    bind *:1936
+    stats enable
+    stats uri /
+    stats hide-version
+    stats auth someuser:password
