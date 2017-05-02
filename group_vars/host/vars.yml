@@ -1,6 +1,19 @@
 host_rcconf: |
   iocage_enable="YES"
 
+host_bootloader: |
+  kern.racct.enable="1"
+  kern.ipc.semaem=32767
+  kern.ipc.semvmx=65534
+  kern.ipc.semusz=184
+  kern.ipc.semume=80
+  kern.ipc.semopm=200
+  kern.ipc.semmsl=120
+  kern.ipc.semmnu=4096
+  kern.ipc.semmns=8192
+  kern.ipc.semmni=32767
+  kern.ipc.semmap=60
+
 host_path: "/usr/local/host"
 provision_path: "/usr/local/bin/provision"
 

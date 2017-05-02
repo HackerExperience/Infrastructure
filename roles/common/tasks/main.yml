@@ -4,6 +4,12 @@
     filter: ansible_local
   no_log: true
 
+- debug:
+    msg: "{{ _possible_private_ip2 }}"
+
+- debug:
+    msg: "{{ private_ip }}"
+
 - set_fact:
     ansible_local: {}
   when: ansible_local is not defined
@@ -79,3 +85,9 @@
     from_role: common
     track_file: rc.local.j2
   when: "'debian' in group_names"
+
+- template:
+    src: loader.conf.j2
+    dest: /boot/loader.conf
+    mode: 0644
+  become: true

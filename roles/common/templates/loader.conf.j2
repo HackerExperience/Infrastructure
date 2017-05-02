@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 # Shared entries
-{{ all_bootloader }}
+{{ all_bootloader | default ("") }}
 
 {%- for group in group_names %} 
   {%- set group_entries = group + '_bootloader' -%}

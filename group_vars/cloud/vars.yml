@@ -1,4 +1,4 @@
-cloud_google_rcconf: |
+cloud_gcp_rcconf: |
   google_accounts_manager_enable="YES"
   google_startup_enable="YES"
   ntpd_sync_on_start="YES"
@@ -10,9 +10,8 @@ cloud_google_rcconf: |
 cloud_ovh_rcconf: |
   ifconfig_vtnet0="DHCP"
 
-cloud_rcconf: "{{ cloud_ovh_rcconf if provider == 'ovh' else cloud_google_rcconf }}"
 
-cloud_user: "{{ system_user if provider == 'ovh' else 'renato'}}"
+cloud_user: "{{ 'freebsd' if provider == 'ovh' else 'renato'}}"
 cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else '~/.ssh/google_compute_engine' }}"
 external_network_interface: "vtnet0"
 internal_network_interface: "vtnet1"

@@ -4,7 +4,7 @@
 #
 # If you (me) just provisioned a cloud server:
 # 1. Add <server> to inventory file (hosts) [all, <role> and <os>]
-# 2. Run this playbook with the flags `--extra-vars "target=<server> public_ip=<ip> private_ip=<ip>"
+# 2. Run this playbook with the flags `-e "target=<server> public_ip=<ip> private_ip=<ip> provider=ovh|gcp"
 #    (Playbook will fail after reboot because it no longer can login with root)
 # 3. Listen to some heavenly metal.
 

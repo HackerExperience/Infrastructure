@@ -1,2 +1,58 @@
 haproxy_user: haproxy
 haproxy_group: haproxy
+haproxy_rcconf: |
+  haproxy_enable="YES"
+
+# 20k connections on each crappy VM is quite OK.
+# More than 30k and look out for port exhaustion.
+haproxy_maxconn: 20000
+
+# Our crappy VM has a single core. If more than one, update the cpu-map to pin
+#  each haproxy process to a specific CPU
+haproxy_nbproc: 1
+haproxy_cpumap: |
+  cpu-map 1 0
+
+# 50000 timeout is OK, specially for clients, otherwise we'd have to add a
+#  unnecessarily frequent heartbeat.
+haproxy_timeout_connect: 5000
+haproxy_timeout_client: 50000
+haproxy_timeout_server: 50000
+
+
+std_helix_mode: http
+
+backend_helix_mode: "{{ std_helix_mode }}"
+# Static-rr does not support weight, slightly faster than std rr
+backend_helix_algorithm: static-rr
+# Below is required to re-send the current SSL request to the backend
+# We've terminated the SSL, added some headers and re-encrypted it.
+std_helix_args: "ssl verify none"
+std_helix_port: 4000
+
+backend_helix_servers:
+  - {name: helix1, ip: 144.217.247.220, port: "{{ std_helix_port }}", args: "{{ std_helix_args }}"}
+  - {name: helix1, ip: 144.217.247.220, port: "{{ std_helix_port }}", args: "{{ std_helix_args }}"}
+
+backend_helix: |
+  mode {{ backend_helix_mode }}
+  balance {{ backend_helix_algorithm }}
+
+haproxy_backends:
+  - { name: helix, definition: "{{ backend_helix }}" }
+
+frontend_helix_mode: "{{ std_helix_mode }}"
+
+frontend_helix: |
+    bind *:443 ssl crt privkey.pem
+    mode {{ frontend_helix_mode }}
+
+    option http-server-close
+    option forwardfor
+    reqadd X-Forwarded-Proto:\ https
+    reqadd X-Forwareded-Port:\ 443
+    rspadd Strict-Transport-Security:\ max-age=15768000
+    default_backend helix-backend
+
+haproxy_frontends:
+  - {name: helix, definition: "{{ frontend_helix }}", default_backend: helix }

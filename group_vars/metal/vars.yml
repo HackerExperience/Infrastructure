@@ -1,0 +1,5 @@
+metal_bootloader: |
+  geom_mirror_load="YES"
+  kern.geom.label.disk_ident.enable="0"
+  kern.geom.label.gptid.enable="0"
+  zfs_load="YES"

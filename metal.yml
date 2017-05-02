@@ -5,9 +5,10 @@
 # If you (me) just installed a metal server:
 # 1. `pkg install -y python2`
 # 2. Add <server> to inventory file (hosts)
-# 3. Run this playbook with the flags `-k` and `--extra-vars "target=<server>"
-#    (Playbook will fail after reboot because it no longer can login with root)
-# 4. Listen to some heavy metal.
+# 3. Add host-specific IP details within a host_vars
+# 4. Run this playbook with the flags `-k` and `-e "target=<server> public_ip=<ip>
+#  (Playbook will fail after reboot because it no longer can login with root)
+# 5. Listen to some heavy metal.
 
 - name: Setup a bare metal host
   hosts: '{{ target }}'

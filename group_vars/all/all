@@ -10,6 +10,9 @@ all_rcconf: |
   dumpdev="AUTO"
   local_unbound_enable="YES"
 
+all_bootloader: |
+  autoboot_delay="-1"
+
 # Ansible user information
 user: phoebe
 user_uid: 1003
@@ -25,3 +28,16 @@ shebang: "#!{{ user_shell }}"
 sshd_users:
   - name: "{{ user }}"
     public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDOARu+WtJqBYWPEi/yfZzLpahZkxrV+grKLU94eWg7QvQK+HLxFXD6riLts+rebA9j+usSe9ZDBPmAY2FPxQZ6I87PeJ2qS0kvTYNRNKx1QTI8v3bKCGB56jRFVCt3rnFMGqek94pRK2w/KE10P0O+cJZc7wNAxePZw4IUuT1A0B/91Td4C1lK2lYX5tyOHBA6eG0NRjMdIaXllx9t4Vnj20UryUdA/0lHL96ADGCP5mM0GVCUxOwPmxjgpNL+etjwhChQ6cGCM95ekB5BIu2/LFCie8ul0p6dELVUpizAjvVHv06zPTMSE44fcWFMt39JkNc6Z+8iaPDk4Btm5+37Ooo9GrWA3qkKYsVlVdVuciLoA62m7JbRvfQ/tdMVWdiZ6R4C/dxTtgA2rFMZW+M8rRy+V1iKiEZMcwDlQJ/5aPPke84iN6Xl0pV7YDkQAADoVVpxsVN10OmGPUJkKerytdA3D33e9iRK2Ti4ys3is7i2FAW2hFefaJbWODuUTSNfghyuudFW4ILz/nGAy70dwyXInJzivg3kFjZdwF7qhQwroYekHDFFy1QwpIF3QQEl63fB7MMLXMgXR32yQPf0GMlBqoEBM8bLBBHcrQSHRpWvbfyYCbC8O6Kxzu8XC9Oa4OuMXpfjLjWZkd9yqXdKk/PwwJr2soZFmqODPIC6PQ=="
+
+# Find out IP addresses based on inventory hostname
+_clean_hostname: "{{ inventory_hostname | replace('-', '') }}"
+
+# Public IP
+_public_ip_var: "private_{{ _clean_hostname }}_public_ip"
+public_ip: "{{ hostvars[inventory_hostname][_public_ip_var] }}"
+
+# Private IP
+_private_ip_var: "private_{{ _clean_hostname }}_private_ip"
+_possible_private_ip1: "{{ hostvars[inventory_hostname][_private_ip_var] }}"
+_possible_private_ip2: "{{ ansible_host | ipaddr }}"
+private_ip: "{{ [_possible_private_ip1, _possible_private_ip2] | reject('undefined') | first}}"
