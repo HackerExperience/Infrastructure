@@ -134,8 +134,33 @@ ansible-playbook \
        jail_args='--priority 10 --disk-quota 200G --no-pin-cpu --allow-sysvipc'"
 
 ansible-playbook \
+    provision.yml -i environments/production/ \
+    -e "provision=1 target=helix-host-1 jail_name=migrate-1
+       jail_args='--priority 70 --disk-quota 10G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/production/ \
+    -e "provision=1 target=helix-host-1 jail_name=heborn-1
+       jail_args='--priority 60 --disk-quota 20G --no-pin-cpu'"
+
+
+ansible-playbook \
     jail.yml -i environments/production/ \
     -e "target=helix-1"
+
+ansible-playbook \
+    jail.yml -i environments/production/ \
+    -e "target=database-1"
+
+ansible-playbook \
+    jail.yml -i environments/production/ \
+    -e "target=migrate-1"
+
+ansible-playbook \
+    jail.yml -i environments/production/ \
+    -e "target=heborn-1"
+
+
 
 ansible-playbook haproxy.yml -i environments/production/
 ansible-playbook database.yml -i environments/production/

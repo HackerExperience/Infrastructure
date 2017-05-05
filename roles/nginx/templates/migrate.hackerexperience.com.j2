@@ -9,9 +9,9 @@ server {
     access_log /var/log/nginx/migrate.access.log combined buffer=10m flush=5m;
     error_log /var/log/nginx/migrate.error.log warn;
 
-    root {{ migration_path }};
+    root {{ migration_path }}/priv/static;
 
-    location ~* \.(?:css|js)$ {
+    location ~* \.(?:css|js|png)$ {
         expires 1h;
     }
 

@@ -1,0 +1,12 @@
+server {
+
+    listen 80;
+    server_name migrate.hackerexperience.com;
+    access_log off;
+    error_log off;
+
+    location / {
+        proxy_pass http://{{ private_migrate1_private_ip }}:80;
+    }
+
+}
