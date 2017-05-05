@@ -39,12 +39,19 @@ heborn
 host
 
 [cloud:children]
-heborn
+ovh
+gcp
+
+[ovh:children]
+
+[gcp:children]
 haproxy
 
 [jail:children]
 helix
 database
+heborn
+heborn_migration
 
 [nginx:children]
 heborn
@@ -52,9 +59,7 @@ heborn_migration
 
 # Hosts running FreeBSD OS
 [freebsd:children]
-helix
-database
+jail
 heborn
-heborn_migration
 haproxy
 host

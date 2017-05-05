@@ -43,9 +43,6 @@ class CallbackModule(CallbackBase):
     # Load parameters from conf file
     def _load_conf(self, file_path):
         conf_dict = {}
-        with open(file_path, 'r') as conf_file:
-            conf_dict = yaml.load(conf_file)
-
         return conf_dict.get('api_key', ''), conf_dict.get('url', 'https://app.datadoghq.com')
 
     # Send event to Datadog

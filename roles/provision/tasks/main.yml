@@ -16,10 +16,10 @@
 
 - assert:
     that:
-      - hostvars["{{ jail_name }}"] is defined
-      - "'{{ jail_name }}' in groups['jail']"
-      - "'{{ jail_name }}' not in groups['cloud']"
-      - "'{{ jail_name }}' not in groups['metal']"
+      - "hostvars['{{ jail_name }}'] is defined"
+      - "'jail' in hostvars['{{ jail_name }}']['group_names']"
+      - "'cloud' not in hostvars['{{ jail_name }}']['group_names']"
+      - "'metal' not in hostvars['{{ jail_name }}']['group_names']"
     msg: "First add {{ jail_name }} to inventory list"
 
 - name: Run provision.sh

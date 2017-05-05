@@ -1,0 +1,12 @@
+server {
+
+    listen 80;
+    server_name 1.hackerexperience.com;
+    access_log off;
+    error_log off;
+
+    location / {
+        proxy_pass http://{{ private_heborn1_private_ip }}:80;
+    }
+
+}
