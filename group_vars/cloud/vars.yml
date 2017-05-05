@@ -1,4 +1,4 @@
-cloud_google_rcconf: |
+cloud_gcp_rcconf: |
   google_accounts_manager_enable="YES"
   google_startup_enable="YES"
   ntpd_sync_on_start="YES"
@@ -7,10 +7,23 @@ cloud_google_rcconf: |
   sshd_enable="YES"
   panicmail_autosubmit="YES"
 
-cloud_rcconf: |
+cloud_ovh_rcconf: |
   ifconfig_vtnet0="DHCP"
 
-cloud_user: "{{ system_user }}"
+cloud_gcp_bootloader: |
+  hw.vtnet.mq_disable=1
+  aesni_load="YES"
+  nvme_load="YES"
+  kern.timecounter.hardware=ACPI-safe
+
+cloud_ovh_bootloader: |
+  geom_mirror_load="YES"
+  kern.geom.label.disk_ident.enable="0"
+  kern.geom.label.gptid.enable="0"
+  zfs_load="YES"
+
+cloud_user: "{{ 'freebsd' if (provider is defined and provider == 'ovh') else 'renato'}}"
+cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else '~/.ssh/google_compute_engine' }}"
 external_network_interface: "vtnet0"
 internal_network_interface: "vtnet1"
 

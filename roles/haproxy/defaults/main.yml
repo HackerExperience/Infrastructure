@@ -1,0 +1,48 @@
+haproxy_user: haproxy
+haproxy_group: haproxy
+
+haproxy_chroot_path: /var/lib/haproxy
+haproxy_socket_path: /var/run/haproxy
+
+haproxy_maxconn: 5000
+
+haproxy_nbproc: 1
+haproxy_cpumap: |
+  cpu-map 1 0
+
+haproxy_timeout_connect: 5000
+haproxy_timeout_client: 50000
+haproxy_timeout_server: 50000
+
+haproxy_defaults: |
+  log global
+  mode http
+  option httplog
+  option dontlognull
+  timeout connect {{ haproxy_timeout_connect }}
+  timeout client {{ haproxy_timeout_client }}
+  timeout server {{ haproxy_timeout_server }}
+
+haproxy_ca_base: "/etc/ssl/certs"
+haproxy_crt_base: "/etc/ssl/private"
+haproxy_default_ciphers: "kEECDH+aRSA+AES:kRSA+AES:+AES256:RC4-SHA:!kEDH:!LOW:!EXP:!MD5:!aNULL:!eNULL"
+
+haproxy_global: |
+  log /dev/log local0
+  chroot {{ haproxy_chroot_path }}
+  stats socket {{ haproxy_socket_path }}/admin.sock mode 660 level admin
+  stats timeout 30s
+  user {{ haproxy_user }}
+  group {{ haproxy_group }}
+  daemon
+  ca-base {{ haproxy_ca_base }}
+  crt-base {{ haproxy_crt_base }}
+  ssl-default-bind-ciphers {{ haproxy_default_ciphers }}
+
+haproxy_listen: |
+  bind *:{{ haproxy_stats_port }}
+  stats enable
+  stats uri /
+  stats hide-version
+  stats auth {{ haproxy_stats_user }}:{{ haproxy_stats_pass }}
+

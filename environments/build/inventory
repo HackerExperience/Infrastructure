@@ -1,12 +1,12 @@
 [all]
 host-build-1 ansible_host=192.168.3.10
+nginx-build-1 ansible_host=192.168.19.10
 jenkins-1 ansible_host=192.168.20.10
 build-elixir-1 ansible_host=192.168.21.10
 build-elixir-2 ansible_host=192.168.21.11
 build-elixir-3 ansible_host=192.168.21.12
 build-elixir-4 ansible_host=192.168.21.13
 build-helix-1 ansible_host=192.168.22.10
-build-helix-2 ansible_host=192.168.22.11
 build-database-1 ansible_host=192.168.23.10
 build-elm-1 ansible_host=192.168.24.10
 build-elm-2 ansible_host=192.168.24.11
@@ -33,7 +33,6 @@ build-elixir-4
 
 [ciagent_helix]
 build-helix-1
-build-helix-2
 
 [ciagent_elm]
 build-elm-1
@@ -45,6 +44,12 @@ build-database-1
 
 [deployer]
 deployer-1
+
+[nginx-build]
+nginx-build-1
+
+[nginx:children]
+nginx-build
 
 # --- common ---
 
@@ -70,6 +75,7 @@ host
 ci
 deployer
 build-database
+nginx-build
 
 [host]
 host-build-1
@@ -78,3 +84,4 @@ host-build-1
 ci
 deployer
 build-database
+nginx-build

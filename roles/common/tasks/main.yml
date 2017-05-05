@@ -79,3 +79,10 @@
     from_role: common
     track_file: rc.local.j2
   when: "'debian' in group_names"
+
+- template:
+    src: loader.conf.j2
+    dest: /boot/loader.conf
+    mode: 0644
+  when: "'jail' not in group_names"
+  become: true

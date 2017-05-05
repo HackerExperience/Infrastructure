@@ -1,0 +1,2 @@
+nginx_sites_enabled:
+  - ci.hackerexperience.com

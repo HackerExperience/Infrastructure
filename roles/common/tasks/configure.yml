@@ -1,6 +1,7 @@
-- name: Update pkg
-  command: pkg update -f
+- name: Force update pkg
+  shell: pkg clean -ay && pkg update -f
   become: true
+  changed_when: false
 
 - name: Install some basic stuff
   pkgng:

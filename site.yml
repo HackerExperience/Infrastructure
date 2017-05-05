@@ -1,0 +1,143 @@
+#!/usr/local/bin/bash
+
+# Provision (metal)
+
+## This step is manual ¯\_(ツ)_/¯
+
+# Setup (dedicated)
+
+ansible-playbook \
+    metal.yml -i environments/build/ \
+    -k -e "target=host-build-1"
+
+
+ansible-playbook \
+    metal.yml -i environments/production/ \
+    -k -e "target=helix-host-1"
+
+# Provision
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=jenkins-1
+       jail_args='--priority 30 --max-ram 4G --disk-quota 200G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=nginx-build-1
+       jail_args='--priority 10 --max-ram 1G --disk-quota 5G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-elixir-1
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-elixir-2
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-elixir-3
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-helix-1
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-database-1
+       jail_args='--priority 15 --max-ram 2G --disk-quota 50G --no-pin-cpu --allow-sysvipc'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-elm-1
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --cpu-pin 0-3'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=build-elm-2
+       jail_args='--priority 50 --max-ram 2G --disk-quota 20G --cpu-pin 4-7'"
+
+ansible-playbook \
+    provision.yml -i environments/build/ \
+    -e "provision=1 target=host-build-1 jail_name=deployer-1
+       jail_args='--priority 40 --max-ram 1G --disk-quota 10G --no-pin-cpu'"
+
+
+# Setup (Jails)
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=nginx-build-1"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elixir-1"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elixir-2"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elixir-3"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-helix-1"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-database-1"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elm-1"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elm-2"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=build-elm-3"
+
+ansible-playbook \
+    jail.yml -i environments/build/ \
+    -e "target=deployer-1"
+
+# Applications
+
+# Build
+
+ansible-playbook jenkins.yml -i environments/build/
+ansible-playbook deployer.yml -i environments/build/
+ansible-playbook ciagent_elixir.yml -i environments/build/
+ansible-playbook ciagent_helix.yml -i environments/build/
+ansible-playbook ciagent_elm.yml -i environments/build/
+ansible-playbook build_database.yml -i environments/build/
+
+# Production
+
+ansible-playbook \
+    provision.yml -i environments/production/ \
+    -e "provision=1 target=helix-host-1 jail_name=helix-1
+        jail_args='--priority 50 --disk-quota 100G --no-pin-cpu'"
+
+ansible-playbook \
+    provision.yml -i environments/production/ \
+    -e "provision=1 target=helix-host-1 jail_name=database-1
+       jail_args='--priority 10 --disk-quota 200G --no-pin-cpu --allow-sysvipc'"
+
+ansible-playbook \
+    jail.yml -i environments/production/ \
+    -e "target=helix-1"
+
+ansible-playbook haproxy.yml -i environments/production/
+ansible-playbook database.yml -i environments/production/
+ansible-playbook helix.yml -i environments/production/
+

@@ -40,7 +40,6 @@
     group: "{{ helix_group }}"
   with_items:
     - "{{ helix_path }}"
-    - "{{ helix_path }}/src"
   become: true
 
 - name: Create priv folder on helix path

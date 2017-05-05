@@ -31,17 +31,3 @@
     dest: "{{ provision_path }}"
     mode: 0774
   become: true
-
-- name: Enable racct
-  lineinfile:
-    path: /boot/loader.conf
-    line: kern.racct.enable="1"
-    insertafter: EOF
-  register: enable_racct
-  become: true
-
-- set_fact:
-    reboot_reason: "Boot loader has changed"
-  notify: reboot server
-  changed_when: enable_racct.changed
-  when: enable_racct.changed

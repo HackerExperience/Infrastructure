@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+global
+    {{ haproxy_global | indent(4) }}
+
+defaults
+    {{ haproxy_defaults | indent(4) }}
+
+{% for frontend in haproxy_frontends %}
+frontend {{ frontend.name}}-frontend
+    {{ frontend.definition | indent(4) }}
+    default_backend {{ frontend.default_backend }}-backend
+
+{% endfor %}
+
+{% for backend in haproxy_backends %}
+  {%- set server_var = 'backend_' + backend.name + '_servers' -%}
+  {%- set servers = hostvars[inventory_hostname][server_var] -%}
+backend {{ backend.name }}-backend
+  {{ backend.definition | indent(4) }}
+  {% for server in servers -%}
+    server {{ server.name }} {{ server.ip }}:{{ server.port }} {{ server.args }}
+  {% endfor -%}
+{% endfor %}
+
+listen stats
+    {{ haproxy_listen | indent(4) }}

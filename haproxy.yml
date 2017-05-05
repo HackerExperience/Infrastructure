@@ -1,0 +1,7 @@
+- name: Setup HAProxy
+  hosts: haproxy
+
+  roles:
+    - {role: common, tags: common}
+    - {role: haproxy, tags: haproxy}
+    # - {role: pf, tags: pf}

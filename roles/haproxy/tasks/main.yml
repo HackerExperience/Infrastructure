@@ -1,0 +1,56 @@
+- name: Install HAProxy
+  pkgng:
+    name: haproxy
+  become: true
+
+- name: Setup haproxy system account
+  group:
+    name: "{{ haproxy_group }}"
+  become: true
+
+- user:
+    name: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+  become: true
+
+- name: Create required directories
+  file:
+    name: "{{ item }}"
+    state: directory
+    recurse: true
+  with_items:
+    - "{{ haproxy_socket_path }}"
+    - "{{ haproxy_chroot_path }}"
+    - "{{ haproxy_ca_base }}"
+    - "{{ haproxy_crt_base }}"
+  become: true
+
+- name: Copy ssl data to server
+  copy:
+    src: "{{ playbook_dir }}/files/letsencrypt/live/api.hackerexperience.com/{{ item.name }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - { dest: "/etc/ssl/private", name: "privkey.pem", mode: "0600" }
+    - { dest: "/etc/ssl/certs", name: "cert.pem", mode: "0644" }
+  become: true
+
+- name: Concat ssl cert and key
+  shell: cat certs/cert.pem >> private/privkey.pem
+  args:
+    chdir: /etc/ssl/
+  become: true
+
+# Note: must happen after ssl concat because of config validation
+- name: Copy haproxy.cfg template
+  template:
+    src: haproxy.cfg.j2
+    dest: /usr/local/etc/haproxy.conf
+    validate: haproxy -c -V -f %s
+  become: true
+
+- name: Reload service
+  service:
+    name: haproxy
+    state: reloaded
+  become: true
