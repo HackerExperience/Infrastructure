@@ -6,7 +6,7 @@
 # 1. `pkg install -y python2`
 # 2. Add <server> to inventory file (hosts)
 # 3. Add host-specific IP details within a host_vars
-# 4. Run this playbook with the flags `-k` and `-e "target=<server> public_ip=<ip>
+# 4. Run this playbook with the flags `-k` and `-e "target=<server>"
 #  (Playbook will fail after reboot because it no longer can login with root)
 # 5. Listen to some heavy metal.
 

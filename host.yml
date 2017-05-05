@@ -4,7 +4,7 @@
   pre_tasks:
     - assert:
         that:
-          - ipv4 is defined
+          - host_ipv4 is defined
           - "'jail' not in group_names"
 
   roles:

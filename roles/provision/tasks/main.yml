@@ -4,13 +4,22 @@
       - "{{ item }} is defined"
   with_items:
     - jail_name
-    - jail_ip
     - jail_args
+
+# Get Jail IP. Nope, can't put them together.
+- set_fact:
+    _clean_jail_hostname: "{{ jail_name | replace('-', '') }}"
+- set_fact:
+    _jail_ip_var: "private_{{ _clean_jail_hostname }}_private_ip"
+- set_fact:
+    jail_ip: "{{ hostvars[inventory_hostname][_jail_ip_var] }}"
 
 - assert:
     that:
       - hostvars["{{ jail_name }}"] is defined
       - "'{{ jail_name }}' in groups['jail']"
+      - "'{{ jail_name }}' not in groups['cloud']"
+      - "'{{ jail_name }}' not in groups['metal']"
     msg: "First add {{ jail_name }} to inventory list"
 
 - name: Run provision.sh

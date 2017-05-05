@@ -6,7 +6,7 @@
 - name: Init DB
   command: /usr/local/etc/rc.d/postgresql initdb
   register: _result
-  failed_when: "'oneinitdb' in _result.stdout"
+  failed_when: "'oneinitdb' in _result.stdout or 'FATAL' in _result.stderr"
   changed_when: "'is not empty' not in _result.stderr"
   become: true
 

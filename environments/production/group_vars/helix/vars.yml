@@ -22,11 +22,3 @@ helix_environment:
   HELIX_DB_POOL_SIZE: "{{ helix_database_pool_size }}"
   REPLACE_OS_VARS: "true"
   MIX_ENV: "prod"
-
-# below rules are temporary, until we move the API servers behind HAProxy
-helix_pf_macros:
-  - "ip_pub = 144.217.247.220"
-
-helix_pf_nat:
-  - "rdr on $ext_if proto tcp from any to $ip_pub port 80 -> $ip_pub port 4000"
-  - "rdr on $ext_if proto tcp from any to $ip_pub port 443 -> $ip_pub port 4000"

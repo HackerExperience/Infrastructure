@@ -12,6 +12,9 @@ all_rcconf: |
 
 all_bootloader: |
   autoboot_delay="-1"
+  beastie_disable="YES"
+  loader_logo="none"
+  hw.memtest.test="0"
 
 # Ansible user information
 user: phoebe
@@ -38,6 +41,4 @@ public_ip: "{{ hostvars[inventory_hostname][_public_ip_var] }}"
 
 # Private IP
 _private_ip_var: "private_{{ _clean_hostname }}_private_ip"
-_possible_private_ip1: "{{ hostvars[inventory_hostname][_private_ip_var] }}"
-_possible_private_ip2: "{{ ansible_host | ipaddr }}"
-private_ip: "{{ [_possible_private_ip1, _possible_private_ip2] | reject('undefined') | first}}"
+private_ip: "{{ hostvars[inventory_hostname][_private_ip_var] }}"

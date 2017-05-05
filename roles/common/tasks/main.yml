@@ -4,12 +4,6 @@
     filter: ansible_local
   no_log: true
 
-- debug:
-    msg: "{{ _possible_private_ip2 }}"
-
-- debug:
-    msg: "{{ private_ip }}"
-
 - set_fact:
     ansible_local: {}
   when: ansible_local is not defined
@@ -90,4 +84,5 @@
     src: loader.conf.j2
     dest: /boot/loader.conf
     mode: 0644
+  when: "'jail' not in group_names"
   become: true

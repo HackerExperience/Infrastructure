@@ -1,3 +1,0 @@
-host_ipv4: "{{ private_buildhost1_public_ip }}"
-host_ipv4_broadcast: "{{ private_buildhost1_broadcast }}"
-host_ipv4_router: "{{ private_buildhost1_router }}"

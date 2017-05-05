@@ -1,3 +1,10 @@
 host_ipv4: "{{ private_helixhost1_public_ip }}"
 host_ipv4_broadcast: "{{ private_helixhost1_broadcast }}"
 host_ipv4_router: "{{ private_helixhost1_router }}"
+
+host_pf_macros:
+  - "ip_pub = {{ private_helixhost1_public_ip }}"
+
+host_pf_nat:
+  - "nat pass on $ext_if from $int_if:network to any -> $ip_pub"
+  - "rdr pass on $ext_if proto tcp from any to $ip_pub port 4000 -> {{ private_helix1_private_ip }} port 4000"

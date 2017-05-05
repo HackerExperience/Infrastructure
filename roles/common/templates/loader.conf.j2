@@ -4,8 +4,11 @@
 {{ all_bootloader | default ("") }}
 
 {%- for group in group_names %} 
-  {%- set group_entries = group + '_bootloader' -%}
-  # Entries for ansible group {{ group }}
-  {{ hostvars[inventory_hostname][group_entries] | default ("") }}
+   {%- if group == 'cloud' -%}
+    {%- set group_entries = 'cloud_' + provider | default("") + '_bootloader' -%}
+  {%- else -%}
+    {%- set group_entries = group + '_bootloader' -%}
+  {%- endif -%}
+# Entries for ansible group {{ group }}
+{{ hostvars[inventory_hostname][group_entries] | default ("") | indent (0) }}
 {%- endfor -%}
-

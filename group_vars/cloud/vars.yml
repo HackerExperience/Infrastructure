@@ -10,8 +10,19 @@ cloud_gcp_rcconf: |
 cloud_ovh_rcconf: |
   ifconfig_vtnet0="DHCP"
 
+cloud_gcp_bootloader: |
+  hw.vtnet.mq_disable=1
+  aesni_load="YES"
+  nvme_load="YES"
+  kern.timecounter.hardware=ACPI-safe
 
-cloud_user: "{{ 'freebsd' if provider == 'ovh' else 'renato'}}"
+cloud_ovh_bootloader: |
+  geom_mirror_load="YES"
+  kern.geom.label.disk_ident.enable="0"
+  kern.geom.label.gptid.enable="0"
+  zfs_load="YES"
+
+cloud_user: "{{ 'freebsd' if (provider is defined and provider == 'ovh') else 'renato'}}"
 cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else '~/.ssh/google_compute_engine' }}"
 external_network_interface: "vtnet0"
 internal_network_interface: "vtnet1"
