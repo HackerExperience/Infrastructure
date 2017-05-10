@@ -26,9 +26,12 @@
     state: absent
   become: true
 
-- name: Ensure helix service is stopped (temp, killall)
-  command: killall beam
+- name: Ensure helix service is stopped
+  command: "{{ item }}"
   failed_when: false
+  with_items:
+    - "{{ helix_bin }} stop"
+    - pkill -f erl
   become: true
   become_user: "{{ helix_user }}"
 
