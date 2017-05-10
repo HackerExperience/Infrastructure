@@ -19,16 +19,20 @@
   no_log: true
   become: true
 
-- name: Install python2, bash
+- name: Install python2, bash etc
   pkgng:
     name: "{{ item }}"
     state: present
   with_items:
     - python2
+    - py27-pip
     - bash
     - git
     - ansible
     - sshpass
+  become: true
+
+- command: pip install datadog
   become: true
 
 # Ansible (on deployer) complains about lack of python2...
@@ -74,13 +78,6 @@
     key: "{{ lookup('file', '/home/renato/.ssh/deployer.pub') }}"
   become: true
 
-- name: Upload deployer ansible.cfg
-  copy:
-    src: ansible.cfg
-    dest: "{{ deployer_home }}/.ansible.cfg"
-  become: true
-  become_user: "{{ deployer_user }}"
-
 - name: Clone Infra playbooks
   git:
     repo: https://github.com/hackerexperience/infrastructure.git
@@ -97,12 +94,16 @@
     recurse: yes
   become: true
 
-# Below is not necessary, just to make it explicit we are not using
-# the ansible.cfg bundled with the repository
-- name: Remove ansible.cfg from playbook
-  file:
+- name: Fix ansible.cfg to match deployer specific case
+  replace:
     path: /usr/local/infrastructure/ansible.cfg
-    state: absent
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - {regexp: '^remote_user = phoebe$', replace: 'remote_user = deployer'}
+    - {regexp: '.\.ssh\/phoebe$', replace: '\1.ssh/deployer_production'}
+    - {regexp: '^ssh_args(\s+.*)$', replace: ''}
+    - {regexp: '^control_path(\s+.*)$', replace: ''}
   become: true
   become_user: "{{ deployer_user }}"
 
