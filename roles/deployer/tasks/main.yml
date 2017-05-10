@@ -101,7 +101,7 @@
     replace: "{{ item.replace }}"
   with_items:
     - {regexp: '^remote_user = phoebe$', replace: 'remote_user = deployer'}
-    - {regexp: '.\.ssh\/phoebe$', replace: '\1.ssh/deployer_production'}
+    - {regexp: '(.*)\.ssh\/phoebe$', replace: '\1.ssh/deployer_production'}
     - {regexp: '^ssh_args(\s+.*)$', replace: ''}
     - {regexp: '^control_path(\s+.*)$', replace: ''}
   become: true
