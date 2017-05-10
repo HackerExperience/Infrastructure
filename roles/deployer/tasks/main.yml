@@ -19,16 +19,20 @@
   no_log: true
   become: true
 
-- name: Install python2, bash
+- name: Install python2, bash etc
   pkgng:
     name: "{{ item }}"
     state: present
   with_items:
     - python2
+    - py27-pip
     - bash
     - git
     - ansible
     - sshpass
+  become: true
+
+- command: pip install datadog
   become: true
 
 # Ansible (on deployer) complains about lack of python2...

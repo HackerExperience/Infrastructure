@@ -63,3 +63,7 @@ jail
 heborn
 haproxy
 host
+
+[datadog:children]
+host
+haproxy

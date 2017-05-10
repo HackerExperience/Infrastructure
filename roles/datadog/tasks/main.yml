@@ -1,0 +1,51 @@
+- name: Setup datadog account
+  group:
+    name: "{{ datadog_group }}"
+  become: true
+- user:
+    name: "{{ datadog_user }}"
+    group: "{{ datadog_group }}"
+  become: true
+
+- name: Prepare datadog environment
+  file:
+    path: "{{ datadog_path }}"
+    state: directory
+    owner: "{{ datadog_user }}"
+    group: "{{ datadog_group }}"
+  become: true
+
+- name: Install datadog
+  get_url:
+    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
+    dest: "{{ datadog_path }}"
+    mode: 0744
+  become: true
+  become_user: "{{ datadog_user }}"
+
+- command: sh setup_agent.sh
+  args:
+    chdir: "{{ datadog_path }}"
+    creates: "{{ datadog_path }}/ddagent-install.log "
+  environment:
+    DD_START_AGENT: 0
+    DD_HOME: "{{ datadog_path }}"
+  become: true
+  become_user: "{{ datadog_user }}"
+
+- name: Run datadog
+  command: ./bin/agent status
+  args:
+    chdir: "{{ datadog_path }}"
+  failed_when: false
+  changed_when: false
+  register: _agent
+  become: true
+  become_user: "{{ datadog_user }}"
+
+- shell: nohup ./bin/agent start &
+  args:
+    chdir: "{{ datadog_path }}"
+  become: true
+  become_user: "{{ datadog_user }}"
+  when: "'not running' in _agent.stdout or 'STOPPED' in  _agent.stdout"

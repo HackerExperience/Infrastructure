@@ -1,0 +1,5 @@
+- name: Setup datadog
+  hosts: datadog
+
+  roles:
+    - {role: datadog, tags: datadog}

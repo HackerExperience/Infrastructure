@@ -1,0 +1,3 @@
+datadog_user: dd-agent
+datadog_group: dd-agent
+datadog_path: /usr/local/etc/datadog-agent
