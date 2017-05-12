@@ -114,7 +114,12 @@ case "$DEPLOY_SOFTWARE" in
         DEPLOY_ENV="infra"
         CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME branch=$DEPLOY_BRANCH"
         ;;
+    deployer)
+        DEPLOY_ENV="build"
+        CUSTOM_EXTRA_VARS=""
+        ;;
     *)
+        CUSTOM_EXTRA_VARS=""
         ;;
 esac
 
