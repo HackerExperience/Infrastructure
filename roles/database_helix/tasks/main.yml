@@ -4,6 +4,7 @@
   become_user: postgres
 
 
+# TODO: this assumes production env, but it may be run on other envs.
 - include_vars:
     dir: "{{ playbook_dir }}/environments/production/group_vars/helix/"
 

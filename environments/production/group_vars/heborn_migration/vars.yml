@@ -19,6 +19,8 @@ database_username: helix
 database_password: "{{ private_database_password }}"
 database_host: "{{ hostvars[groups['database'][0]]['ansible_host'] }}"
 
+migration_exporter_url: "https://api.hackerexperience.com/v1/webhook/migration/import"
+
 migration_environment:
   HEBORN_MIGRATION_SMTP_LOGIN: "{{ smtp_login }}"
   HEBORN_MIGRATION_SMTP_PASSWORD: "{{ smtp_password }}"
@@ -28,4 +30,5 @@ migration_environment:
   HEBORN_MIGRATION_DB_USERNAME: "{{ database_username }}"
   HEBORN_MIGRATION_DB_PASSWORD: "{{ database_password }}"
   HEBORN_MIGRATION_DB_HOST: "{{ database_host }}"
+  HEBORN_MIGRATION_EXPORTER_URL: "{{ migration_exporter_url }}"
   MIX_ENV: prod
