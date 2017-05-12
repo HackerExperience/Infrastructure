@@ -28,12 +28,17 @@
   become: true
   become_user: "{{ migration_user }}"
 
+- include_vars:
+    dir: "{{ playbook_dir }}/environments/production/group_vars/helix/"
+
 - name: Release
   shell: "{{ item }}"
   args:
     chdir: "{{ migration_path }}"
+  environment:
+    HEBORN_MIGRATION_EXPORTER_TOKEN: "{{ private_migration_exporter_token }}"
   with_items:
-    - (kill `cat ../pid` || true) && elixir --detached -e "File.write! '../pid', :os.getpid" -S mix phx.server > ../migration.log
+    - (pkill -f erl || true) && nohup mix phx.server >> ../migration.log &
   become: true
   become_user: "{{ migration_user }}"
 

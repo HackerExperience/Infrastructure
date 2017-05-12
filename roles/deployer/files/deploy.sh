@@ -118,9 +118,6 @@ esac
 # tmp, until ansible 2.3 gets released
 source /usr/local/ansible/hacking/env-setup
 
-# Make ansible use this config file, not the one on the repository
-export ANSIBLE_CONFIG=/home/deployer/.ansible.cfg
-
 cd $DEPLOYER_INFRASTRUCTURE_PATH
 
 ansible-playbook \
