@@ -30,6 +30,9 @@ function get_deploy_software() {
         wiki)
             DEPLOY_SOFTWARE="$1"
             ;;
+        deployer)
+            DEPLOY_SOFTWARE="$1"
+            ;;
         *)
             exit "Can't deploy $1"
             ;;
