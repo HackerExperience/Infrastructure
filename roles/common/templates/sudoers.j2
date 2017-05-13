@@ -96,7 +96,7 @@ root ALL=(ALL) ALL
 
 # Disable requiretty so we can enable Pipelining=True for ansible
 Defaults:{{ user }} !requiretty
-{% if "helix" in group_names -%}
+{% if deployer_user is defined -%}
 Defaults:{{ deployer_user }} !requiretty
 {% endif -%}
 

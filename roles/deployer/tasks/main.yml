@@ -72,10 +72,18 @@
     mode: 0770
   become: true
 
-- name: Set authorized key for deployer user
+- name: Set authorized key for deployer and ansible user
   authorized_key:
-    user: "{{ deployer_user }}"
-    key: "{{ lookup('file', '/home/renato/.ssh/deployer.pub') }}"
+    user: "{{ item.user }}"
+    key: "{{ item.key }}"
+    path: "{{ item.path }}"
+  with_items:
+    - user: "{{ deployer_user }}"
+      key: "{{ lookup('file', 'deployer.pub') }}"
+      path: "{{ deployer_home }}/.ssh/authorized_keys"
+    - user: "{{ user }}"
+      key: "{{ lookup('file', 'deployer_local.pub') }}"
+      path: "/home/{{ user }}/.ssh/authorized_local"
   become: true
 
 - name: Clone Infra playbooks
@@ -116,13 +124,18 @@
     mode: 0600
   become: true
 
-- name: Upload deployer_production ssh key to deployer
+- name: Upload deployer production and local keys
   copy:
-    src: "~/.ssh/deployer_production"
-    dest: "{{ deployer_home }}/.ssh/deployer_production"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: "{{ deployer_user }}"
     group: "{{ deployer_group }}"
     mode: 0600
+  with_items:
+    - src: "~/.ssh/deployer_production"
+      dest: "{{ deployer_home }}/.ssh/deployer_production"
+    - src: "~/.ssh/deployer_local"
+      dest: "{{ deployer_home }}/.ssh/deployer_local"
   become: true
 
 - name: Replace current host keys
