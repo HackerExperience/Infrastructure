@@ -21,7 +21,7 @@ helix-1
 [heborn]
 heborn-1
 
-[heborn_migration]
+[migration]
 migrate-1
 
 [haproxy]
@@ -51,11 +51,11 @@ haproxy
 helix
 database
 heborn
-heborn_migration
+migration
 
 [nginx:children]
 heborn
-heborn_migration
+migration
 
 # Hosts running FreeBSD OS
 [freebsd:children]

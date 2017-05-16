@@ -87,6 +87,7 @@
   with_items:
     - ecto_create
     - ecto_migrate
+    - seeds
   become: true
   become_user: "{{ helix_user }}"
 
