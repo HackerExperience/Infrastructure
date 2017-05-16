@@ -27,8 +27,8 @@ g = Digraph('G', filename=output + '.gv')
 g.attr(compound='true')
 g.edge_attr.update(minlen='2')
 
-g.node('internet', shape='doublecircle')
-g.node('cloudflare', shape='star')
+render_internet(g)
+render_cloudflare(g)
 
 with g.subgraph(name=namespace + 'cloud') as cloud:
     cloud.attr(label='Cloud')
@@ -36,7 +36,6 @@ with g.subgraph(name=namespace + 'cloud') as cloud:
     render_gclb(cloud)
 
     with cloud.subgraph(name=namespace + 'haproxy') as haproxy:
-        haproxy.attr(label='HAProxy')
         render(haproxy, 'haproxy')
 
     gen_links(cloud, 'cloud', context=context)

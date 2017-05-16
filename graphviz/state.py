@@ -2,18 +2,23 @@ def node(c, info, v):
     hostname = '{}-{}'.format(info['hostname'], str(v))
 
     ip = []
+    if 'public_ip' in info:
+        ip.append(info['public_ip'])
     if info['subnet']:
         ip.append('{}.{}'.format(info['subnet'], str(info['start_at'] + v - 1)))
-    if 'public_ip' in info:
-
-        ip.append(info['public_ip'])
     if not ip:
-        ip.append('hidden')
+        ip.append('(hidden)')
 
     dns = []
     if 'dns' in info:
         if isinstance(info['dns'], list):
             dns = info['dns']
+
+            for entry in dns:
+                if entry == hostname:
+                    dns = [entry]
+                    break
+
         else:
             dns.append(info['dns'])
 
@@ -136,13 +141,15 @@ role_info = {
         'subnet': '192.168.179',
         'start_at': 10,
         'count': 1,
-        'label': 'HEBorn Migration'
+        'label': 'HEBorn Migration',
+        'dns': 'migrate.hackerexperience.com'
     },
     'heborn': {
         'hostname': 'heborn',
         'subnet': '192.168.180',
         'start_at': 10,
         'count': 1,
+        'dns': '1.hackerexperience.com',
         'label': 'HEBorn (HE1)'
     },
     'interactive': {
@@ -150,70 +157,90 @@ role_info = {
         'subnet': '192.168.250',
         'start_at': 10,
         'count': 2,
-        'label': 'Interactive Staging'
+        'label': 'Interactive Staging',
+        'dns': ['interactive-1', 'interactive-2']
     }
 }
 
+def color_link_internet():
+    return 'red'
+
+def color_link_google():
+    return 'blue'
+
+def color_link_cloudflare():
+    return 'orange'
+
+def color_link_lan():
+    return 'green4'
+
+def color_link_bastion():
+    return 'grey'
+
+def color_link_deployer():
+    return 'magenta'
+
 env_links = {
     'prod': [
-        ('helix', 'database', 'mn', ('cluster_helix', 'cluster_database'), ['all']),
-        ('migration', 'database', 'mn', ('cluster_migration', 'cluster_database'), ['all'])
+        ('helix', 'database', 'mn', ('cluster_helix', 'cluster_database', ''), ['all']),
+        ('migration', 'database', 'mn', ('cluster_migration', 'cluster_database', ''), ['all'])
     ],
     'infra': [
-        ('nginx_infra', 'wiki', 'mn', ('cluster_nginx_infra', 'cluster_wiki'), ['all']),
-        ('nginx_infra', 'blog', 'mn', ('cluster_nginx_infra', 'cluster_blog'), ['all'])
+        ('nginx_infra', 'wiki', 'mn', ('cluster_nginx_infra', 'cluster_wiki', ''), ['all']),
+        ('nginx_infra', 'blog', 'mn', ('cluster_nginx_infra', 'cluster_blog', ''), ['all'])
     ],
     'build': [
-        ('build_helix', 'build_database', 'mn', ('cluster_build_helix', 'cluster_build_database'), ['all']),
-        ('nginx_build', 'jenkins', 'mn', ('', 'cluster_jenkins'), ['all']),
-        ('jenkins', 'elm', 'mn', ('cluster_jenkins', 'cluster_elm'), ['all']),
-        ('jenkins', 'build_helix', 'mn', ('cluster_jenkins', 'cluster_build_helix'), ['all']),
-        ('jenkins', 'elixir', 'mn', ('cluster_jenkins', 'cluster_elixir'), ['all']),
+        ('build_helix', 'build_database', 'mn', ('cluster_build_helix', 'cluster_build_database', ''), ['all']),
+        ('nginx_build', 'jenkins', 'mn', ('', 'cluster_jenkins', ''), ['all']),
+        ('jenkins', 'elm', 'mn', ('cluster_jenkins', 'cluster_elm', ''), ['all']),
+        ('jenkins', 'build_helix', 'mn', ('cluster_jenkins', 'cluster_build_helix', ''), ['all']),
+        ('jenkins', 'elixir', 'mn', ('cluster_jenkins', 'cluster_elixir', ''), ['all']),
     ],
     'cloud': [
-        ('gclb', 'haproxy', 'n', ('', 'cluster_haproxy'), ['all'])
+        ('gclb', 'haproxy', 'n', ('', 'cluster_haproxy', color_link_google()), ['all'])
     ],
     'global': [
 
         # Internet
-        ('internet', 'gclb', '1', ('', ''), ['all']),
-        ('internet', 'cloudflare', '1', ('', ''), ['all']),
-        ('internet', 'bastion', 'n', ('', ''), ['all']),
+        ('internet', 'gclb', '1', ('', '', color_link_internet()), ['all']),
+        ('internet', 'cloudflare', '1', ('', '', color_link_internet()), ['all']),
+        ('internet', 'bastion', 'n', ('', '', color_link_internet()), ['all']),
 
         # Gclb
-        ('haproxy', 'helix', 'mn', ('cluster_haproxy', 'cluster_helix'), ['all']),
+        ('haproxy', 'helix', 'mn', ('cluster_haproxy', 'cluster_helix', color_link_google()), ['all']),
 
         # Cloudflare
-        ('cloudflare', 'heborn', 'n', ('', 'cluster_heborn'), ['all']),
-        ('cloudflare', 'migration', 'n', ('', 'cluster_migration'), ['all']),
-        ('cloudflare', 'nginx_infra', 'n', ('', 'cluster_nginx_infra'), ['all']),
-        ('cloudflare', 'nginx_build', 'n', ('', 'cluster_nginx_build'), ['all']),
-        ('cloudflare', 'interactive', 'n', ('', 'cluster_interactive'), ['all']),
+        ('cloudflare', 'heborn', 'n', ('', 'cluster_heborn', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'migration', 'n', ('', 'cluster_migration', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'nginx_infra', 'n', ('', 'cluster_nginx_infra', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'nginx_build', 'n', ('', 'cluster_nginx_build', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'interactive', 'n', ('', 'cluster_interactive', color_link_cloudflare()), ['all']),
 
         # Bastion
-        ('bastion', 'nginx_infra', 'mn', ('', 'cluster_infra'), ['all']),
-        ('bastion', 'nginx_build', 'mn', ('', 'cluster_nginx_build'), ['all']),
-        ('bastion', 'helix', 'mn', ('', 'cluster_helix'), ['all']),
-        ('bastion', 'interactive', 'mn', ('', 'cluster_dev'), ['all']),
-        ('bastion', 'deployer', 'mn', ('', ''), ['all']),
-        ('bastion', 'jenkins', 'mn', ('', 'cluster_build'), ['freeform']),
-        ('bastion', 'database', 'mn', ('', 'cluster_database'), ['freeform']),
-        ('bastion', 'elixir', 'mn', ('', 'cluster_elixir'), ['freeform']),
-        ('bastion', 'build_helix', 'mn', ('', 'cluster_build_helix'), ['freeform']),
-        ('bastion', 'elm', 'mn', ('', 'cluster_elm'), ['all']),
-        ('bastion', 'blog', 'mn', ('', 'cluster_blog'), ['freeform']),
-        ('bastion', 'wiki', 'mn', ('', 'cluster_wiki'), ['freeform']),
-        ('bastion', 'build_database', 'mn', ('', 'cluster_build_database'), ['freeform']),
-        ('bastion', 'heborn', 'mn', ('', 'cluster_heborn'), ['freeform']),
-        ('bastion', 'migration', 'mn', ('', 'cluster_migration'), ['freeform']),
+        ('bastion', 'nginx_infra', 'mn', ('', 'cluster_infra', color_link_bastion()), ['all']),
+        ('bastion', 'nginx_build', 'mn', ('', 'cluster_build', color_link_bastion()), ['all']),
+        ('bastion', 'helix', 'mn', ('', 'cluster_prod', color_link_bastion()), ['all']),
+        ('bastion', 'interactive', 'mn', ('', 'cluster_dev', color_link_bastion()), ['all']),
+        ('bastion', 'deployer', 'mn', ('', '', color_link_bastion()), ['all']),
+        ('bastion', 'jenkins', 'mn', ('', 'cluster_build', color_link_bastion()), ['freeform']),
+        ('bastion', 'database', 'mn', ('', 'cluster_database', color_link_bastion()), ['freeform']),
+        ('bastion', 'elixir', 'mn', ('', 'cluster_elixir', color_link_bastion()), ['freeform']),
+        ('bastion', 'build_helix', 'mn', ('', 'cluster_build_helix', color_link_bastion()), ['freeform']),
+        ('bastion', 'elm', 'mn', ('', 'cluster_elm', color_link_bastion()), ['freeform']),
+        ('bastion', 'blog', 'mn', ('', 'cluster_blog', color_link_bastion()), ['freeform']),
+        ('bastion', 'wiki', 'mn', ('', 'cluster_wiki', color_link_bastion()), ['freeform']),
+        ('bastion', 'build_database', 'mn', ('', 'cluster_build_database', color_link_bastion()), ['freeform']),
+        ('bastion', 'heborn', 'mn', ('', 'cluster_heborn', color_link_bastion()), ['freeform']),
+        ('bastion', 'migration', 'mn', ('', 'cluster_migration', color_link_bastion()), ['freeform']),
 
         # Deployer
-        ('elixir', 'deployer', 'mn', ('cluster_slaves', ''), ['all']),
-        ('deployer', 'deployer', 'mn', ('', ''), ['all']),
-        ('deployer', 'helix', 'mn', ('', 'cluster_helix'), ['all']),
-        ('deployer', 'migration', 'mn', ('', 'cluster_migration'), ['all']),
-        ('deployer', 'interactive', 'mn', ('', 'cluster_interactive'), ['all']),
-        ('deployer', 'heborn', 'mn', ('', 'cluster_heborn'), ['all']),
+        ('elixir', 'deployer', 'mn', ('cluster_elixir', '', ''), ['all']),
+        ('elm', 'deployer', 'mn', ('cluster_elm', '', ''), ['all']),
+        ('deployer', 'deployer', 'mn', ('', '', color_link_deployer()), ['all']),
+        ('deployer', 'helix', 'mn', ('', 'cluster_helix', color_link_deployer()), ['all']),
+        ('deployer', 'migration', 'mn', ('', 'cluster_migration', color_link_deployer()), ['all']),
+        ('deployer', 'interactive', 'mn', ('', 'cluster_interactive', color_link_deployer()), ['all']),
+        ('deployer', 'heborn', 'mn', ('', 'cluster_heborn', color_link_deployer()), ['all']),
     ]
 }
 
@@ -237,32 +264,37 @@ def render_cloudflare(c):
            label='Cloudflare\nAnycast',
            shape='star')
 
-def link(c, src, dest, ltail, lhead):
-    c.edge(src, dest, ltail=ltail, lhead=lhead)
+def render_internet(c):
+    c.node('internet',
+           label='Internet\nWild Wild Web',
+           shape='doublecircle')
 
-def link_1(c, src, dest, ltail='', lhead=''):
-    link(c, src, dest, ltail, lhead)
+def link(c, src, dest, ltail, lhead, **attr):
+    c.edge(src, dest, ltail=ltail, lhead=lhead, **attr)
 
-def link_n(c, src, dest_role, ltail='', lhead=''):
+def link_1(c, src, dest, ltail='', lhead='', **attr):
+    link(c, src, dest, ltail, lhead, **attr)
+
+def link_n(c, src, dest_role, ltail='', lhead='', **attr):
     dest = role_info[dest_role]
     for i in range(0, dest['count']):
         dest_id = '{}-{}'.format(dest['hostname'], str(i + 1))
-        link(c, src, dest_id, ltail=ltail, lhead=lhead)
+        link(c, src, dest_id, ltail=ltail, lhead=lhead, **attr)
 
-def link_mn(c, src_role, dest_role, ltail='', lhead=''):
+def link_mn(c, src_role, dest_role, ltail='', lhead='', **attr):
     src = role_info[src_role]
     dest = role_info[dest_role]
     for s in range(0, src['count']):
         src_id = '{}-{}'.format(src['hostname'], str(s + 1))
         for d in range(0, dest['count']):
             dest_id = '{}-{}'.format(dest['hostname'], str(d + 1))
-            link(c, src_id, dest_id, ltail, lhead)
+            link(c, src_id, dest_id, ltail, lhead, **attr)
 
 
 def gen_links(c, env, context):
     links = env_links[env]
     for link_entry in links:
-        (src, dest, mode, (ltail, lhead), allowed_ctx) = link_entry
+        (src, dest, mode, (ltail, lhead, color), allowed_ctx) = link_entry
         if mode == 'mn':
             f = link_mn
         elif mode == 'n':
@@ -281,7 +313,10 @@ def gen_links(c, env, context):
         if 'all' not in allowed_ctx and context not in allowed_ctx:
             continue
 
-        f(c, src, dest, ltail, lhead)
+        if color == '':
+            color = color_link_lan()
+
+        f(c, src, dest, ltail, lhead, **{'color': color})
 
 
 def get_first_element(role):
