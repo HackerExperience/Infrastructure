@@ -180,6 +180,9 @@ def color_link_bastion():
 def color_link_deployer():
     return 'magenta'
 
+def color_link_office():
+    return 'gray15'
+
 env_links = {
     'prod': [
         ('helix', 'database', 'mn', ('cluster_helix', 'cluster_database', ''), ['all']),
@@ -205,6 +208,8 @@ env_links = {
         ('internet', 'gclb', '1', ('', '', color_link_internet()), ['all']),
         ('internet', 'cloudflare', '1', ('', '', color_link_internet()), ['all']),
         ('internet', 'bastion', 'n', ('', '', color_link_internet()), ['all']),
+
+        ('office', 'bastion', 'n', ('', '', color_link_office()), ['all']),
 
         # Gclb
         ('haproxy', 'helix', 'mn', ('cluster_haproxy', 'cluster_helix', color_link_google()), ['all']),
@@ -269,6 +274,12 @@ def render_internet(c):
            label='Internet\nWild Wild Web',
            shape='doublecircle')
 
+def render_office(c):
+    c.node('office',
+           label='Office VPN\nLocal ISP',
+           shape='folder')
+
+
 def link(c, src, dest, ltail, lhead, **attr):
     c.edge(src, dest, ltail=ltail, lhead=lhead, **attr)
 
@@ -320,7 +331,7 @@ def gen_links(c, env, context):
 
 
 def get_first_element(role):
-    if role in ['cloudflare', 'gclb', 'internet']:
+    if role in ['cloudflare', 'gclb', 'internet', 'office']:
         return role
 
     hostname = role_info[role]['hostname']

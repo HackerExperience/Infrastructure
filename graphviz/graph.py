@@ -29,6 +29,7 @@ g.edge_attr.update(minlen='2')
 
 render_internet(g)
 render_cloudflare(g)
+render_office(g)
 
 with g.subgraph(name=namespace + 'cloud') as cloud:
     cloud.attr(label='Cloud')
