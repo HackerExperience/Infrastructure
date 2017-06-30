@@ -143,6 +143,11 @@ ansible-playbook \
     -e "provision=1 target=helix-host-1 jail_name=heborn-1
        jail_args='--priority 60 --disk-quota 20G --no-pin-cpu'"
 
+ansible-playbook \
+    provision.yml -i environments/production/ \
+    -e "provision=1 target=helix-host-1 jail_name=proxy-prod-1
+       jail_args='--priority 05 --disk-quota 5G --no-pin-cpu'"
+
 
 ansible-playbook \
     jail.yml -i environments/production/ \
@@ -160,6 +165,9 @@ ansible-playbook \
     jail.yml -i environments/production/ \
     -e "target=heborn-1"
 
+ansible-playbook \
+    jail.yml -i environments/production/ \
+    -e "target=proxy-prod-1"
 
 
 ansible-playbook haproxy.yml -i environments/production/

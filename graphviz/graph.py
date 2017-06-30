@@ -29,7 +29,6 @@ g.edge_attr.update(minlen='2')
 
 render_internet(g)
 render_cloudflare(g)
-render_office(g)
 
 with g.subgraph(name=namespace + 'cloud') as cloud:
     cloud.attr(label='Cloud')
@@ -78,6 +77,9 @@ with g.subgraph(name=namespace + 'build') as build:
 
 with g.subgraph(name=namespace + 'prod') as prod:
     prod.attr(label='Production')
+
+    with prod.subgraph(name=namespace + 'proxy_prod') as proxy_prod:
+        render(proxy_prod, 'proxy_prod')
 
     with prod.subgraph(name=namespace + 'migration') as migration:
         render(migration, 'migration')

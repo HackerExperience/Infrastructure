@@ -1,0 +1,3 @@
+nginx_sites_enabled:
+  - proxy-1.hackerexperience.com
+  - proxy-migrate.hackerexperience.com

@@ -2,8 +2,8 @@ server {
 
     listen 80;
     server_name migrate.hackerexperience.com;
-    access_log off;
-    error_log off;
+    access_log /var/log/nginx/proxy-migrate.access.log combined buffer=10m flush=5m;
+    error_log /var/log/nginx/proxy-1.error.log;
 
     location / {
 
@@ -12,6 +12,7 @@ server {
       proxy_set_header  X-Forwarded-Proto https;
       proxy_set_header  X-Forwarded-For $remote_addr;
       proxy_set_header  X-Forwarded-Host $remote_addr;
+
       proxy_pass http://{{ private_migrate1_private_ip }}:80;
     }
 

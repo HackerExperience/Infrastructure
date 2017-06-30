@@ -7,4 +7,6 @@ host_pf_macros:
 
 host_pf_nat:
   - "nat pass on $ext_if from $int_if:network to any -> $ip_pub"
+  - "rdr pass on $ext_if proto tcp from any to $ip_pub port 80 -> {{ private_proxyprod1_private_ip }} port 80"
+  - "rdr pass on $ext_if proto tcp from any to $ip_pub port 443 -> {{ private_proxyprod1_private_ip }} port 443"
   - "rdr pass on $ext_if proto tcp from any to $ip_pub port 4000 -> {{ private_helix1_private_ip }} port 4000"

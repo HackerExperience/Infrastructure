@@ -5,6 +5,7 @@ helix-1 ansible_host=192.168.101.10
 migrate-1 ansible_host=192.168.179.10
 database-1 ansible_host=192.168.110.10
 heborn-1 ansible_host=192.168.180.10
+proxy-prod-1 ansible_host=192.168.100.10
 
 [host]
 helix-host-1
@@ -33,6 +34,9 @@ database
 [nginx:children]
 heborn
 
+[proxy-prod]
+proxy-prod-1
+
 # --- common ---
 
 [metal:children]
@@ -52,10 +56,12 @@ helix
 database
 heborn
 migration
+proxy-prod
 
 [nginx:children]
 heborn
 migration
+proxy-prod
 
 # Hosts running FreeBSD OS
 [freebsd:children]

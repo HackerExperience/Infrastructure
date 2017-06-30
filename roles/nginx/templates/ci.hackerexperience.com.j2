@@ -2,11 +2,10 @@ server {
     listen 80;
     server_name ci.hackerexperience.com;
 
+    access_log /var/log/nginx/jenkins.access.log combined buffer=10m flush=5m;
+    error_log /var/log/nginx/jenkins.error.log warn;
+
     location / {
-
-      access_log /var/log/nginx/jenkins.access.log combined buffer=10m flush=5m;
-      error_log /var/log/nginx/jenkins.error.log warn;
-
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
