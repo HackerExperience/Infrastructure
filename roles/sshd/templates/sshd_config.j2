@@ -146,7 +146,7 @@ AllowUsers {{ user }}
 {% for group in group_names %} 
   {%- set group_entries = group + '_ssh_users' %}
   {% set allowed_user = hostvars[inventory_hostname][group_entries] %}
-  {% if allowed_user is defined %}
+  {% if allowed_user is defined and not (group == 'cloud' and allowed_user == 'root') %}
 AllowUsers {{ allowed_user }}
   {% endif %}
 {% endfor %}

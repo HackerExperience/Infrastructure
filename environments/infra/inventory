@@ -3,6 +3,7 @@ bastion-1 ansible_host=192.168.1.10
 nginx-infra-1 ansible_host=192.168.10.10
 chatops-1 ansible_host=192.168.15.10
 wiki-1 ansible_host=192.168.70.10
+chat-1
 
 [bastion]
 bastion-1
@@ -12,6 +13,13 @@ nginx-infra-1
 
 [chatops]
 chatops-1
+
+[chat]
+chat-1
+
+[mattermost]
+chatops-1
+chat-1
 
 [wiki]
 wiki-1
@@ -23,6 +31,7 @@ wiki-1
 [cloud:children]
 ovh
 gcp
+do
 
 [ovh:children]
 wiki
@@ -31,6 +40,9 @@ nginx-infra
 bastion
 
 [gcp:children]
+
+[do:children]
+chat
 
 [nginx:children]
 nginx-infra
@@ -43,6 +55,7 @@ wiki
 
 [debian:children]
 chatops
+chat
 
 [php:children]
 wiki

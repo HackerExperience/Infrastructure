@@ -22,8 +22,10 @@ cloud_ovh_bootloader: |
   kern.geom.label.gptid.enable="0"
   zfs_load="YES"
 
-cloud_user: "{{ 'freebsd' if (provider is defined and provider == 'ovh') else 'renato'}}"
-cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else '~/.ssh/google_compute_engine' }}"
+# Whose idea was to use Yaml and Jinja? I miss Chef...
+cloud_user: "{{ 'renato' if provider is not defined else ('freebsd' if provider == 'ovh' else ('renato' if provider == 'gcp' else 'root')) }}"
+
+cloud_private_key: "{{ '~/.ssh/ovh' if provider == 'ovh' else ('~/.ssh/google_compute_engine' if provider == 'gcp' else '~/.ssh/digital_ocean') }}"
 external_network_interface: "vtnet0"
 internal_network_interface: "vtnet1"
 

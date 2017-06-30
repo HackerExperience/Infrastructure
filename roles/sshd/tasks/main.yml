@@ -1,3 +1,14 @@
+- name: Add ansible user
+  user:
+    name: "{{ user }}"
+    shell: "{{ user_shell }}"
+    home: "{{ user_home }}"
+    password: "{{ user_password }}"
+    groups: "{{ user_group }}"
+    append: yes
+  become: true
+  no_log: true
+
 - name: Add ssh user keys
   authorized_key:
     user: "{{ item.name }}"

@@ -39,8 +39,15 @@ role_info = {
     'haproxy': {
         'hostname': 'haproxy',
         'subnet': False,
-        'count': 4,
+        'count': 1,
         'label': 'HAProxy'
+    },
+    'chat': {
+        'hostname': 'chat',
+        'subnet': False,
+        'count': 1,
+        'label': 'Mattermost',
+        'dns': 'chat.hackerexperience.com'
     },
     'bastion': {
         'hostname': 'bastion',
@@ -207,7 +214,7 @@ env_links = {
         ('jenkins', 'build_helix', 'mn', ('cluster_jenkins', 'cluster_build_helix', ''), ['all']),
         ('jenkins', 'elixir', 'mn', ('cluster_jenkins', 'cluster_elixir', ''), ['all']),
     ],
-    'cloud': [
+    'gcp': [
         ('gclb', 'haproxy', 'n', ('', 'cluster_haproxy', color_link_google()), ['all'])
     ],
     'global': [
@@ -225,6 +232,7 @@ env_links = {
         ('cloudflare', 'nginx_build', 'n', ('', 'cluster_nginx_build', color_link_cloudflare()), ['all']),
         ('cloudflare', 'proxy_prod', 'n', ('', 'cluster_proxy_prod', color_link_cloudflare()), ['all']),
         ('cloudflare', 'interactive', 'n', ('', 'cluster_interactive', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'chat', 'n', ('', 'cluster_chat', color_link_cloudflare()), ['all']),
 
         # Bastion
         ('bastion', 'nginx_infra', 'mn', ('', 'cluster_infra', color_link_bastion()), ['all']),
