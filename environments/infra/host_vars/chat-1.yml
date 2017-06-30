@@ -1,0 +1,1 @@
+ansible_host: "{{ private_chat1_public_ip }}"
