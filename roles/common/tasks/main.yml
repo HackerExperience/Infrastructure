@@ -58,9 +58,10 @@
     from_role: common
     track_file: rc.local.j2
     compare_with: "{{ ansible_local.track_common_rclocalj2 | default() }}"
-  when: "'debian' in group_names"
+  when:
+    - "'debian' in group_names"
 
-- name: Add rc.conf fragment
+- name: Add rc.local fragment
   include_role:
     name: config
     tasks_from: rclocal
@@ -78,7 +79,8 @@
   vars:
     from_role: common
     track_file: rc.local.j2
-  when: "'debian' in group_names"
+  when:
+    - "'debian' in group_names"
 
 - template:
     src: loader.conf.j2

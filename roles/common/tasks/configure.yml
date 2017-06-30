@@ -2,6 +2,7 @@
   shell: pkg clean -ay && pkg update -f
   become: true
   changed_when: false
+  when: "'freebsd' in group_names"
 
 - name: Install some basic stuff
   pkgng:
@@ -19,17 +20,6 @@
     - ca-certificates
   become: true
   when: "'debian' in group_names"
-
-- name: Add ansible user
-  user:
-    name: "{{ user }}"
-    shell: "{{ user_shell }}"
-    home: "{{ user_home }}"
-    password: "{{ user_password }}"
-    groups: "{{ user_group }}"
-    append: yes
-  become: true
-  no_log: true
 
 - name: Add sudoers template
   template:
