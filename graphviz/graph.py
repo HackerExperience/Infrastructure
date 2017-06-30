@@ -30,15 +30,21 @@ g.edge_attr.update(minlen='2')
 render_internet(g)
 render_cloudflare(g)
 
-with g.subgraph(name=namespace + 'cloud') as cloud:
-    cloud.attr(label='Cloud')
+with g.subgraph(name=namespace + 'do') as do:
+    do.attr(label='Digital Ocean')
 
-    render_gclb(cloud)
+    with do.subgraph(name=namespace + 'chat') as chat:
+        render(chat, 'chat')
 
-    with cloud.subgraph(name=namespace + 'haproxy') as haproxy:
+with g.subgraph(name=namespace + 'gcp') as gcp:
+    gcp.attr(label='Google Cloud Platform')
+
+    render_gclb(gcp)
+
+    with gcp.subgraph(name=namespace + 'haproxy') as haproxy:
         render(haproxy, 'haproxy')
 
-    gen_links(cloud, 'cloud', context=context)
+    gen_links(gcp, 'gcp', context=context)
 
 render(g, 'bastion')
 render(g, 'deployer')
