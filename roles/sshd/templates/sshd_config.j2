@@ -151,3 +151,8 @@ AllowUsers {{ allowed_user }}
   {% endif %}
 {% endfor %}
 
+{% if 'deployer' in group_names %}
+  Match Address 127.0.0.1,::1
+      AuthorizedKeysFile .ssh/authorized_local
+{% endif %}
+

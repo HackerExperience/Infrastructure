@@ -1,14 +1,3 @@
-# - name: Ensure .ssh directory exists
-#   file:
-#     path: "/home/{{ item.name }}/.ssh"
-#     recurse: yes
-#     state: directory
-#     owner: "{{ item.name }}"
-#     group: "{{ item.name }}"
-#   become: true
-#   with_items: "{{ sshd_users }}"
-  
-
 - name: Add ssh user keys
   authorized_key:
     user: "{{ item.name }}"
@@ -28,4 +17,3 @@
   become: true
   notify:
   - restart sshd
- 

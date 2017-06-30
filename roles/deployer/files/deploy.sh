@@ -94,6 +94,9 @@ if [ "$DEPLOY_ENV" == 'development' ]; then
     LIMIT="interactive-$SERVER_ID"
 fi
 
+CUSTOM_EXTRA_VARS=""
+CUSTOM_ARGS=""
+
 # Find out custom extra_vars
 case "$DEPLOY_SOFTWARE" in
     helix)
@@ -114,6 +117,11 @@ case "$DEPLOY_SOFTWARE" in
         DEPLOY_ENV="infra"
         CUSTOM_EXTRA_VARS=" wiki_name=$WIKI_NAME branch=$DEPLOY_BRANCH"
         ;;
+    deployer)
+        DEPLOY_ENV="build"
+        CUSTOM_ARGS="ansible_host=127.0.0.1"
+        CUSTOM_EXTRA_VARS="--private-key=~/.ssh/deployer_local -u phoebe"
+        ;;
     *)
         ;;
 esac
@@ -127,4 +135,5 @@ ansible-playbook \
     "$DEPLOY_SOFTWARE".yml \
     -i environments/"$DEPLOY_ENV" \
     --extra-vars "deploy=1 $CUSTOM_EXTRA_VARS" \
+    $CUSTOM_ARGS \
     --limit "$LIMIT"
