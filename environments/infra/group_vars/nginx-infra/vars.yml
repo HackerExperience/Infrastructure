@@ -1,4 +1,2 @@
 nginx_sites_enabled:
   - ci.hackerexperience.com
-  - proxy-1.hackerexperience.com
-  - proxy-migrate.hackerexperience.com

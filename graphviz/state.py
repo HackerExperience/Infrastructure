@@ -122,6 +122,12 @@ role_info = {
         'start_at': 99,
         'count': 1
     },
+    'proxy_prod': {
+        'hostname': 'proxy-prod',
+        'subnet': '192.168.100',
+        'start_at': 10,
+        'count': 1
+    },
     'helix': {
         'hostname': 'helix',
         'subnet': '192.168.101',
@@ -180,8 +186,13 @@ def color_link_bastion():
 def color_link_deployer():
     return 'magenta'
 
+def color_link_office():
+    return 'gray15'
+
 env_links = {
     'prod': [
+        ('proxy_prod', 'migration', 'mn', ('cluster_proxy_prod', 'cluster_migration', ''), ['all']),
+        ('proxy_prod', 'heborn', 'mn', ('cluster_proxy_prod', 'cluster_heborn', ''), ['all']),
         ('helix', 'database', 'mn', ('cluster_helix', 'cluster_database', ''), ['all']),
         ('migration', 'database', 'mn', ('cluster_migration', 'cluster_database', ''), ['all'])
     ],
@@ -210,10 +221,9 @@ env_links = {
         ('haproxy', 'helix', 'mn', ('cluster_haproxy', 'cluster_helix', color_link_google()), ['all']),
 
         # Cloudflare
-        ('cloudflare', 'heborn', 'n', ('', 'cluster_heborn', color_link_cloudflare()), ['all']),
-        ('cloudflare', 'migration', 'n', ('', 'cluster_migration', color_link_cloudflare()), ['all']),
         ('cloudflare', 'nginx_infra', 'n', ('', 'cluster_nginx_infra', color_link_cloudflare()), ['all']),
         ('cloudflare', 'nginx_build', 'n', ('', 'cluster_nginx_build', color_link_cloudflare()), ['all']),
+        ('cloudflare', 'proxy_prod', 'n', ('', 'cluster_proxy_prod', color_link_cloudflare()), ['all']),
         ('cloudflare', 'interactive', 'n', ('', 'cluster_interactive', color_link_cloudflare()), ['all']),
 
         # Bastion
@@ -320,7 +330,7 @@ def gen_links(c, env, context):
 
 
 def get_first_element(role):
-    if role in ['cloudflare', 'gclb', 'internet']:
+    if role in ['cloudflare', 'gclb', 'internet', 'office']:
         return role
 
     hostname = role_info[role]['hostname']

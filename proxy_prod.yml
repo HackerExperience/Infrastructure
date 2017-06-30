@@ -1,0 +1,7 @@
+- name: Setup Proxy for Prod
+  hosts: proxy-prod
+
+  roles:
+    - {role: common, tags: common}
+    - {role: nginx, tags: nginx}
+    # - {role: pf, tags: pf}

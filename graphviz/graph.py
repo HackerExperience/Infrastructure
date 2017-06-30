@@ -78,6 +78,9 @@ with g.subgraph(name=namespace + 'build') as build:
 with g.subgraph(name=namespace + 'prod') as prod:
     prod.attr(label='Production')
 
+    with prod.subgraph(name=namespace + 'proxy_prod') as proxy_prod:
+        render(proxy_prod, 'proxy_prod')
+
     with prod.subgraph(name=namespace + 'migration') as migration:
         render(migration, 'migration')
 
