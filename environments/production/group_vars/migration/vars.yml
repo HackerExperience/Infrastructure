@@ -9,7 +9,7 @@ elixir_user: "{{ migration_user }}"
 elixir_group: "{{ migration_group }}"
 
 deployer_user: "deployer"
-heborn_ssh_users: "{{ deployer_user }}"
+migration_ssh_users: "{{ deployer_user }}"
 
 smtp_login: postmaster@mailgun.hackerexperience.com
 smtp_password: "{{ private_smtp_password }}"

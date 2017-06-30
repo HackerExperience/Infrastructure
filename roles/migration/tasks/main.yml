@@ -43,7 +43,7 @@
 
 
 - include_role:
-    name: heborn_migration
+    name: migration
     tasks_from: deploy
   when:
     - deploy is defined
