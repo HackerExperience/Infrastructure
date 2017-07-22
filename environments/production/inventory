@@ -6,6 +6,7 @@ migrate-1 ansible_host=192.168.179.10
 database-1 ansible_host=192.168.110.10
 heborn-1 ansible_host=192.168.180.10
 proxy-prod-1 ansible_host=192.168.100.10
+tiling-1
 
 [host]
 helix-host-1
@@ -30,12 +31,17 @@ haproxy-1
 
 [postgresql:children]
 database
+tiling
 
 [nginx:children]
 heborn
+tiling
 
 [proxy-prod]
 proxy-prod-1
+
+[tiling]
+tiling-1
 
 # --- common ---
 
@@ -45,11 +51,15 @@ host
 [cloud:children]
 ovh
 gcp
+do
 
 [ovh:children]
 
 [gcp:children]
 haproxy
+
+[do:children]
+tiling
 
 [jail:children]
 helix
@@ -69,6 +79,9 @@ jail
 heborn
 haproxy
 host
+
+[ubuntu:children]
+tiling
 
 [datadog:children]
 host

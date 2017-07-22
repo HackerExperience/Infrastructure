@@ -1,0 +1,4 @@
+- name: Install osm2pgsql
+  apt:
+    name: osm2pgsql
+  become: true

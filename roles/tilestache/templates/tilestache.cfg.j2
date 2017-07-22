@@ -1,0 +1,30 @@
+{
+  "cache": {
+    "name": "Disk",
+    "path": "file://{{ tilestache_cache_path }}",
+    "dirs": "safe"
+  },
+  "layers": {
+    "main": { 
+      "projection": "spherical mercator",
+      "cache lifespan": 0,
+      "allowed origin": "*",
+      "provider": {
+        "name": "mapnik",
+        "mapfile": "/var/local/gis/style/style.xml"
+      },
+      "metatile": {
+        "rows": 4,
+        "columns": 4,
+        "buffer": 64
+      },
+      "preview": {
+        "lat": "-23.5505",
+        "lon": "-46.6262",
+        "zoom": 4,
+        "ext": "png"
+      },
+      "logging": "debug"
+    }
+  }
+}

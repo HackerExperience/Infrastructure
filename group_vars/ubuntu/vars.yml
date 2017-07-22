@@ -1,0 +1,7 @@
+bash_path: "/bin/bash"
+root_group: "root"
+sudoers_path: "/etc/sudoers"
+system_user: "root"
+
+external_network_interface: "eth0"
+internal_network_interface: "eth1"

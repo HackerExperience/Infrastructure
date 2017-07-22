@@ -1,0 +1,55 @@
+- name: Download required dependencies
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - mapnik-utils
+    - openstreetmap-carto
+    - npm
+    - fonts-noto-cjk
+    - fonts-noto-hinted
+    - fonts-noto-unhinted
+    - fonts-hanazono
+    - ttf-unifont
+  become: true
+
+- name: Install CartoCSS
+  command: ln -s /usr/bin/nodejs /usr/bin/node
+
+- command: npm install -g carto
+  become: true
+
+- name: Download/update shapefiles
+  command: scripts/get-shapefiles.py
+  args:
+    chdir: "{{ tiling_style_path }}/carto"
+  become: true
+
+- name: Generate style
+  shell: carto -a "3.0.0" project.mml > "{{ tiling_style_path }}"/style.xml
+  args:
+    chdir: "{{ tiling_style_path }}/carto"
+  become: true
+
+# WARNING: Below commands were tested only with GNU sed
+- name: Process style
+  # Add PostGIS user
+  command: sed -i '/postgis]]><\/Parameter>/a<Parameter name=\"user\"><![CDATA[tiling]]><\/Parameter>' style.xml
+  args:
+    chdir: "{{ tiling_style_path }}"
+  become: true
+
+  # Fix paths
+  command: sed -i 's/CDATA\[data/CDATA[\/var\/local\/gis\/style\/carto\/data/' style.xml
+  args:
+    chdir: "{{ tiling_style_path }}"
+  become: true
+  
+- command: sed -i 's/file=\"symbols/file=\"\/var\/local\/gis\/style\/carto\/symbols/' style.xml
+  args:
+    chdir: "{{ tiling_style_path }}"
+  become: true
+
+
+
+
+  

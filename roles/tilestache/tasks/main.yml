@@ -1,0 +1,21 @@
+- name: Install tilestache
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - tilestache
+
+# Note: Upgrade below is required because the default package on Ubuntu
+# comes with a bug, fixed on commit 9177193405 at TileStache repo
+- command: pip install TileStache==1.51.6
+  become: true
+
+- name: Copy tilestache cfg
+  file:
+    path: "{{ tilestache_path }}"
+    state: directory
+  become: true
+
+- template:
+    src: tilestache.cfg.j2
+    dest: "{{ tilestache_path }}/tilestache.cfg"
+  become: true

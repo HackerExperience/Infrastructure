@@ -1,0 +1,38 @@
+- name: Prepare styling
+  file:
+    path: /var/local/gis/style/
+    state: directory
+    recurse: true
+  become: true
+
+- git:
+    repo: https://github.com/gravitystorm/openstreetmap-carto.git
+    dest: /var/local/gis/style/carto/
+  become: true
+
+- name: Downloading OSM PBF
+  get_url:
+    url: https://s3.amazonaws.com/metro-extracts.mapzen.com/sao-paulo_brazil.osm.pbf
+    dest: /var/local/osm
+  become: true
+
+- apt:
+    name: python-pexpect
+  become: true
+
+# - command: "osm2pgsql -c -U {{ tiling_database_username }} -d {{ tiling_database_name }} {{ style_args }} -C 300 /var/local/osm"
+#   environment:
+#     PGPASS: "{{ private_tiling_database_password }}"
+
+# Manual step: verify args, cache size etc
+- assert:
+    that:
+      - false
+
+- expect:
+    command: "osm2pgsql -G -U {{ tiling_database_username }} -d {{ tiling_database_name }} {{ style_args }} -C 1000 -W /var/local/osm.pbf"
+    responses:
+      (?i)password: "{{ private_tiling_database_password }}"
+
+# TODO: indexes
+# psql -d gis -U tiling -W -f indexes.sql

@@ -1,0 +1,13 @@
+- name: Setup Tiling
+  hosts: tiling
+
+  roles:
+    - {role: common, tags: common}
+    - {role: postgresql, tags: postgresql}
+    - {role: postgis, tags: postgis}
+    - {role: database_tiling, tags: database_tiling}
+    - {role: osm2pgsql, tags: osm2pgsql}
+    - {role: mapnik, tags: mapnik}
+    - {role: tilestache, tags: tilestache}
+    # - {role: osm2pg, tags: osm2pg}
+    # - {role: pf, tags: pf}

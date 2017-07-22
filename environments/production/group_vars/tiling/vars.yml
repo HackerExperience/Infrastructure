@@ -1,0 +1,29 @@
+# PG
+pg_max_connections: 100
+pg_shared_buffers: '128MB'
+pg_fsync: 'on'
+pg_full_page_writes: 'on'
+pg_synchronous_commit: 'on'
+pg_checkpoint_timeout: '5min'
+
+# Postgis
+postgis_install_table: "{{ tiling_database_name }}"
+
+# Tiling Database
+tiling_database_name: gis
+tiling_database_username: tiling
+private_tiling_database_password: "TODOchangeme"
+
+# Tiling
+tiling_path: "/var/local/gis"
+tiling_style_path: "{{ tiling_path }}/style"
+tiling_user: "tiling"
+
+# Style
+style_path: "{{ tiling_style_path }}/carto"
+style_args: "--hstore --style {{ style_path }}/openstreetmap-carto.style --tag-transform-script {{ style_path }}/openstreetmap-carto.lua"
+
+# Tylestache
+tilestache_path: "/var/local/tilestache"
+tilestache_cache_path: "/var/local/tiles"
+tilestache_user: "tilestache"

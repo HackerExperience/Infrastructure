@@ -1,0 +1,4 @@
+- name: Install postgis
+  apt:
+    name: postgresql-9.6-postgis-2.3
+  become: true
