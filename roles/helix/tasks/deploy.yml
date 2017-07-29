@@ -20,21 +20,6 @@
   when:
     - "'development' in inventory_dir"
 
-- name: Clean up any previous build
-  file:
-    path: "{{ helix_path }}"
-    state: absent
-  become: true
-
-- name: Ensure helix service is stopped
-  command: "{{ item }}"
-  failed_when: false
-  with_items:
-    - "{{ helix_bin }} stop"
-    - pkill -f erl
-  become: true
-  become_user: "{{ helix_user }}"
-
 - name: Ensure correct permissions on helix folder
   file:
     path: "{{ item }}"
@@ -43,6 +28,14 @@
     group: "{{ helix_group }}"
   with_items:
     - "{{ helix_path }}"
+  become: true
+
+- name: Clean up any previous build
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ helix_path }}/helix.tar.gz"
   become: true
 
 - name: Create priv folder on helix path
@@ -91,7 +84,7 @@
   become: true
   become_user: "{{ helix_user }}"
 
-- name: Run (foreground, temp)
-  command: "{{ helix_path }}/bin/helix start"
+- name: Restart helix
+  command: "{{ helix_path }}/bin/helix restart"
   become: true
   become_user: "{{ helix_user }}"
