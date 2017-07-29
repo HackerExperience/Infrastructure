@@ -1,0 +1,32 @@
+- name: Generate SSL locally
+  hosts: localhost
+
+  vars:
+
+    home: "/home/renato"
+    cloudflare_credentials_path: "{{ home }}/.cloudflare"
+    letsencrypt_path: "/etc/letsencrypt"
+    infra_letsencrypt_path: "{{ playbook_dir }}/files/letsencrypt/live"
+
+    letsencrypt_notification_email: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          66396633373238313334343939373838323665356439373031663337653337613664333530663561
+          6262643834656630373131326636343730313365663439360a353661633561616538626664656635
+          38333836303337616666336534633332376462313938346662626435383938656163306434656638
+          3037353830333933630a663062623863353130613661386431633432316266353363666139313036
+          62333466393666326337396134653066646336303137316263316334616132336563
+
+    sites:
+      - {
+          domain: api.hackerexperience.com,
+          backend: gcloud,
+          backend_id: helix-lb-target-proxy
+        }
+
+  vars_prompt:
+    - name: "ansible_sudo_pass"
+      prompt: "Sudo password"
+      private: yes
+
+  roles:
+    - {role: ssl, tags: ssl}

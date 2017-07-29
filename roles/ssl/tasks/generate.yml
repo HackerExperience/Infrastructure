@@ -1,0 +1,88 @@
+- name: Checking whether cert should be renewed
+  command: "python should_renew.py {{ renew.domain }}"
+  args:
+    chdir: "{{ role_path }}/files"
+  register: should_renew_result
+  changed_when: false
+
+- set_fact:
+    should_renew: False
+- set_fact:
+    should_renew: True
+  when: "should_renew_result.stdout == 'yes'"
+
+- debug:
+    msg: "Nothing to renew; leaving..."
+  when: not should_renew
+
+- block:
+  - name: Generate cert
+    command: "certbot certonly -d {{ renew.domain }} --dns-cloudflare --dns-cloudflare-credentials {{ cloudflare_credentials_path }} --non-interactive --agree-tos -m {{ letsencrypt_notification_email }}"
+    register: result
+
+  # `copy` won't work because FUCK ansible
+  - name: Copy cert to infra repo
+    shell: "cp {{ letsencrypt_path }}/live/{{ renew.domain }}/{{ file }} {{ infra_letsencrypt_path }}/{{ renew.domain }}"
+    # copy:
+    #   src: "{{ letsencrypt_path }}/live/{{ renew.domain }}/{{ file }}"
+    #   dest: "{{ infra_letsencrypt_path }}/{{ renew.domain }}"
+    #   follow: true
+    with_items:
+      - fullchain.pem
+      - privkey.pem
+    loop_control:
+      loop_var: file
+    become: true
+
+  - debug:
+      msg: "{{ playbook_dir }}"
+
+  - debug:
+      msg: "{{ infra_letsencrypt_path }}"
+
+  # Hack: sourcing ansible because of custom version
+  # Hack: hard-coded paths
+  # Hack: ansible
+  - name: Encrypt privkey.pem
+    shell: "/usr/local/bin/bash -c 'source /home/renato/.ansible/env && ansible-vault encrypt {{ infra_letsencrypt_path }}/{{ renew.domain }}/privkey.pem --vault-password-file=/home/renato/.vault-password'"
+    become: true
+
+  # Fix permissions
+  - command: "chmod 0644 {{ infra_letsencrypt_path }}/{{ renew.domain }}/{{ file }}"
+    with_items:
+      - fullchain.pem
+      - privkey.pem
+    loop_control:
+      loop_var: file
+    become: true
+
+  - set_fact:
+      gcloud_cert_id: "{{ ansible_date_time.iso8601_micro | to_uuid }}"
+
+  - debug:
+      msg: "{{ gcloud_cert_id }}"
+
+  # Backend = Gcloud
+  - block:
+
+    - name: Add cert to Gcloud
+      shell: "bash -c 'source /home/renato/.bashrc && gcloud compute ssl-certificates create {{ gcloud_cert_id }} --certificate {{ cert }} --private-key {{ priv }}'"
+      vars:
+        cert: "{{ letsencrypt_path }}/live/{{ renew.domain }}/fullchain.pem"
+        priv: "{{ letsencrypt_path }}/live/{{ renew.domain }}/privkey.pem"
+      register: gcloud_ssl_create
+      become: true
+
+    - name: Update gcloud https proxy
+      shell: "bash -c 'source /home/renato/.bashrc && gcloud compute target-https-proxies update helix-lb-target-proxy --ssl-certificate {{ gcloud_cert_id }}'"
+
+    when: renew.backend == "gcloud"
+
+  - debug:
+      msg: |
+        "Done! Now, redeploy haproxy and then helix. Don't forget to
+        update the git repository"
+
+  when: should_renew
+  become: true
+
