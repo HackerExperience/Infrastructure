@@ -9,9 +9,15 @@
     group: "{{ elixir_group }}"
   become: true
 
-- name: Install Erlang
+- name: Install Erlang 20
   pkgng:
-    name: erlang
+    name: "{{ item }}"
+  with_items:
+    - erlang
+    - erlang-runtime20
+  become: true
+
+- shell: cp -r /usr/local/lib/erlang20/bin/* /usr/local/bin/
   become: true
 
 - name: Ensure elixir directory exists
@@ -22,7 +28,7 @@
 
 - name: Get elixir (precompiled)
   get_url:
-    url: https://github.com/elixir-lang/elixir/releases/download/v1.4.2/Precompiled.zip
+    url: https://github.com/elixir-lang/elixir/releases/download/v1.5.1/Precompiled.zip
     dest: /tmp/elixir.zip
   become: true
 
