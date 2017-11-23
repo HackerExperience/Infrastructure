@@ -1,0 +1,27 @@
+# Manual setup:
+# 1 - Cloudfare
+#   touch {{ home }}/.cloudflare
+#   chmod 400 {{ home }}/.cloudfare
+#   Add:
+#     dns_cloudflare_email = $email
+#     dns_cloudflare_api_key = $key
+# 2 - Gcloud
+#   As root, do `gcloud init`
+#   Ensure everything is ok with `gcloud auth list`
+
+- stat:
+    path: /usr/local/bin/certbot
+  register: certbotbin
+
+- include_role:
+    name: ssl
+    tasks_from: install
+  when: not certbotbin.stat.exists
+
+- include_role:
+    name: ssl
+    tasks_from: generate
+  vars:
+    renew: "{{ item }}"
+  with_items:
+    - "{{ sites }}"

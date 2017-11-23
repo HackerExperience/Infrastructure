@@ -15,9 +15,9 @@ haproxy_cpumap: |
 
 # 50000 timeout is OK, specially for clients, otherwise we'd have to add a
 #  unnecessarily frequent heartbeat.
-haproxy_timeout_connect: 5000
-haproxy_timeout_client: 50000
-haproxy_timeout_server: 50000
+haproxy_timeout_connect: 5s
+haproxy_timeout_client: 30s
+haproxy_timeout_server: 30s
 
 
 std_helix_mode: http
@@ -34,8 +34,8 @@ backend_helix_servers:
   - {name: helix1, ip: "{{ private_helixhost1_public_ip }}", port: "{{ std_helix_port }}", args: "{{ std_helix_args }}"}
 
 backend_helix: |
-  mode {{ backend_helix_mode }}
-  balance {{ backend_helix_algorithm }}
+  mode {{ backend_helix_mode | indent(4) }}
+  balance {{ backend_helix_algorithm | indent(4) }}
 
 haproxy_backends:
   - { name: helix, definition: "{{ backend_helix }}" }
@@ -46,15 +46,15 @@ frontend_helix: |
     bind *:443 ssl crt privkey.pem
     mode {{ frontend_helix_mode }}
 
-    option http-server-close
     option forwardfor
     reqadd X-Forwarded-Proto:\ https
-    reqadd X-Forwareded-Port:\ 443
+    reqadd X-Forwarded-Port:\ 443
     rspadd Strict-Transport-Security:\ max-age=15768000
+
     default_backend helix-backend
 
 haproxy_frontends:
-  - {name: helix, definition: "{{ frontend_helix }}", default_backend: helix }
+  - {name: helix, definition: "{{ frontend_helix }}"}
 
 haproxy_stats_user: "{{ private_haproxy_stats_user }}"
 haproxy_stats_pass: "{{ private_haproxy_stats_pass }}"

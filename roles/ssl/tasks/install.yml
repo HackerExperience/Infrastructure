@@ -1,0 +1,7 @@
+- pkgng:
+    name: py27-certbot
+  become: true
+
+- command: pip install certbot-dns-cloudflare
+  become: true
+

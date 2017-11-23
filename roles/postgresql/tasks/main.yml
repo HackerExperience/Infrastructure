@@ -2,6 +2,12 @@
   pkgng:
     name: postgresql96-server
   become: true
+  when: "'freebsd' in group_names"
+
+- apt:
+    name: postgresql-9.6
+  become: true
+  when: "'ubuntu' in group_names"
 
 - name: Init DB
   command: /usr/local/etc/rc.d/postgresql initdb
@@ -9,11 +15,14 @@
   failed_when: "'oneinitdb' in _result.stdout or 'FATAL' in _result.stderr"
   changed_when: "'is not empty' not in _result.stderr"
   become: true
+  when: "'freebsd' in group_names"
 
+# TODO: Adapt config for other OSes
 - name: Apply configurations
   include_role:
     name: postgresql
     tasks_from: config
+  when: "'freebsd' in group_names"
 
 # Note: I'm using `raw` module because of bug described below
 # https://github.com/ansible/ansible/issues/5923

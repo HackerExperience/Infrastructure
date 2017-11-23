@@ -9,8 +9,6 @@ defaults
 {% for frontend in haproxy_frontends %}
 frontend {{ frontend.name}}-frontend
     {{ frontend.definition | indent(4) }}
-    default_backend {{ frontend.default_backend }}-backend
-
 {% endfor %}
 
 {% for backend in haproxy_backends %}

@@ -1,13 +1,13 @@
 - template:
     src: pg_hba.conf.j2
-    dest: /var/db/postgres/data96/pg_hba.conf
+    dest: "{{ pg_conf_path}}/pg_hba.conf"
     mode: 0600
   become: true
   notify: reload postgres
 
 - template:
     src: postgresql.conf.j2
-    dest: /var/db/postgres/data96/postgresql.conf
+    dest: "{{ pg_conf_path }}/postgresql.conf"
     mode: 0600
   become: true
   notify: restart postgres

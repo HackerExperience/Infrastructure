@@ -1,0 +1,13 @@
+# Import
+- include_role:
+    name: tiling
+    tasks_from: import
+  when:
+    - "{{ import }} is defined and {{ import }} == 1"
+
+# Style
+- include_role:
+    name: tiling
+    tasks_from: style
+  when:
+    - "{{ style }} is defined and {{ style }} == 1"

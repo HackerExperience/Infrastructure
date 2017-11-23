@@ -1,0 +1,30 @@
+- name: Create role for tiling
+  command: psql -c "create user {{ tiling_database_username }} password '{{ private_tiling_database_password }}'"
+  register: _result
+  changed_when: "'create role' in _result.stdout"
+  # failed_when: false
+  # no_log: true
+  become: true
+  become_user: postgres
+
+- name: Create database for tiling
+  command: psql -c "create database {{ tiling_database_name }} owner {{ tiling_database_username }}"
+  become: true
+  become_user: postgres
+  failed_when: false
+
+- name: Create extensions
+  command: psql -c "create extension {{ item }}" -d "{{ tiling_database_name }}"
+  with_items:
+    - postgis
+    - postgis_topology
+    - hstore
+  become: true
+  become_user: postgres
+
+- name: Add PGPASS file
+  template:
+    src: pgpass.j2
+    dest: "{{ tiling_home }}/.pgpass"
+    mode: '0600'
+  become: true

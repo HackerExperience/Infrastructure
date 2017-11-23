@@ -1,2 +1,4 @@
 postgresql_rcconf: |
   postgresql_enable="YES"
+
+pg_conf_path: '{{ "/var/db/postgres/data96" if "freebsd" in group_names else "/etc/postgresql/9.6/main" }}' 
