@@ -21,7 +21,8 @@
     name: "{{ item }}"
   with_items:
     - git
-    - py27-boto
+    - py27-boto3
+    - py27-botocore
     - gmake
   become: true
 
