@@ -30,13 +30,23 @@
     src: "{{ playbook_dir }}/files/letsencrypt/live/api.hackerexperience.com/{{ item.name }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
+    force: true
   with_items:
     - { dest: "/etc/ssl/private", name: "privkey.pem", mode: "0600" }
     - { dest: "/etc/ssl/certs", name: "cert.pem", mode: "0644" }
+    - { dest: "/etc/ssl/certs", name: "fullchain.pem", mode: "0644" }
+  become: true
+
+- name: Remove passphrase from privkey
+  command: openssl rsa -in privkey.pem -out privkey.pem
+  args:
+    chdir: /etc/ssl/private
   become: true
 
 - name: Concat ssl cert and key
-  shell: cat certs/cert.pem >> private/privkey.pem
+  shell: cat certs/cert.pem certs/fullchain.pem private/privkey.pem | sudo tee hackerexperience.com.pem
+  # shell: cat private/privkey.pem >> certs/cert.pem
+  # shell: cat certs/cert.pem >> private/privkey.pem
   args:
     chdir: /etc/ssl/
   become: true

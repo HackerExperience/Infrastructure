@@ -22,10 +22,17 @@ def should_renew(hostname, attempts = 0):
     try:
         diff = get_cert_expiration(hostname) - datetime.now()
         return diff.days <= 30
+
+    # It's already expired
+    except ssl.SSLError, e:
+            return True
+
+    # Some other exception, possibly a timeout
     except Exception, e:
         if e.message == 'timed out' and attempts < 3:
             time.sleep(1)
             return should_renew(hostname, attempts + 1)
+
         raise e
 
 def usage():

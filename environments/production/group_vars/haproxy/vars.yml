@@ -43,7 +43,7 @@ haproxy_backends:
 frontend_helix_mode: "{{ std_helix_mode }}"
 
 frontend_helix: |
-    bind *:443 ssl crt privkey.pem
+    bind *:443 ssl crt /etc/ssl/hackerexperience.com.pem
     mode {{ frontend_helix_mode }}
 
     option forwardfor
