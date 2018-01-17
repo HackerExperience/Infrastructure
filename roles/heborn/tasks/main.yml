@@ -29,7 +29,8 @@
   pkgng:
     name: "{{ item }}"
   with_items:
-    - py27-boto
+    - py27-boto3
+    - py27-botocore
   become: true
 
 - include_role:
